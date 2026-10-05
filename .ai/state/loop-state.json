@@ -1,24 +1,93 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-05T00:00:00Z",
-  "status": "PLANNED",
+  "updatedAt": "2026-10-05T08:11:50.544Z",
+  "status": "NEXT_PHASE",
   "currentTaskId": "INV-001",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": null,
-  "reviewedHeadSha": null,
-  "lastVerdict": null,
-  "lastCiStatus": null,
+  "currentPr": 1,
+  "reviewedHeadSha": "d1b6b347ae4a015d30e6b2f1a23e878e263ece18",
+  "lastVerdict": "PASS",
+  "lastCiStatus": "success",
   "blockedReason": null,
-  "lastMerge": null,
-  "nextTask": null,
-  "completedTasks": [],
+  "lastMerge": {
+    "taskId": "INV-001",
+    "prNumber": 1,
+    "headSha": "d1b6b347ae4a015d30e6b2f1a23e878e263ece18",
+    "mergeCommit": "9cab21550525c52f8e436692d402750c9a4fa1c1",
+    "mergedAt": "2026-10-05T07:24:21Z",
+    "reconciledAt": "2026-10-05T08:11:50.540Z",
+    "ciStatus": "success"
+  },
+  "nextTask": {
+    "status": "requested",
+    "taskId": "INV-002",
+    "requestedAt": "2026-10-05T08:11:50.544Z",
+    "reason": null
+  },
+  "completedTasks": [
+    "INV-001"
+  ],
   "history": [
     {
       "at": "2026-10-05T00:00:00Z",
       "from": null,
       "to": "PLANNED",
       "note": "Invitation-native loop initialised. INV-001 is the first and only task."
+    },
+    {
+      "at": "2026-10-05T08:11:50.540Z",
+      "from": "PLANNED",
+      "to": "READY",
+      "note": "Reconciled INV-001 from verified merge evidence (PR #1, merge commit 9cab21550525c52f8e436692d402750c9a4fa1c1)."
+    },
+    {
+      "at": "2026-10-05T08:11:50.541Z",
+      "from": "READY",
+      "to": "IMPLEMENTING",
+      "note": "Reconciled INV-001 from verified merge evidence (PR #1, merge commit 9cab21550525c52f8e436692d402750c9a4fa1c1)."
+    },
+    {
+      "at": "2026-10-05T08:11:50.541Z",
+      "from": "IMPLEMENTING",
+      "to": "TESTING",
+      "note": "CI evidence for INV-001 head d1b6b347ae4a015d30e6b2f1a23e878e263ece18: success."
+    },
+    {
+      "at": "2026-10-05T08:11:50.541Z",
+      "from": "TESTING",
+      "to": "ANTISLOP_REVIEW",
+      "note": "AntiSlop and quality checks recorded as passing for INV-001."
+    },
+    {
+      "at": "2026-10-05T08:11:50.542Z",
+      "from": "ANTISLOP_REVIEW",
+      "to": "CHATGPT_REVIEW",
+      "note": "Passed through the review gate on verified merge evidence; no automated ChatGPT review is fabricated."
+    },
+    {
+      "at": "2026-10-05T08:11:50.542Z",
+      "from": "CHATGPT_REVIEW",
+      "to": "APPROVED",
+      "note": "Approved from verified merge evidence for INV-001."
+    },
+    {
+      "at": "2026-10-05T08:11:50.542Z",
+      "from": "APPROVED",
+      "to": "MERGED",
+      "note": "INV-001 merged as PR #1 (merge commit 9cab21550525c52f8e436692d402750c9a4fa1c1)."
+    },
+    {
+      "at": "2026-10-05T08:11:50.543Z",
+      "from": "MERGED",
+      "to": "NEXT_PHASE",
+      "note": "Phase complete for INV-001; requesting the next task from the chatgpt authority."
+    },
+    {
+      "at": "2026-10-05T08:11:50.544Z",
+      "from": "NEXT_PHASE",
+      "to": "NEXT_PHASE",
+      "note": "Next task INV-002 requested from the chatgpt authority for phase Phase 2 — Visual System."
     }
   ]
 }

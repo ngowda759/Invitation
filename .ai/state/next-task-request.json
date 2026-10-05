@@ -1,0 +1,32 @@
+{
+  "version": 1,
+  "requestedAt": "2026-10-05T08:11:50.544Z",
+  "requestedBy": "invitation-loop",
+  "authority": {
+    "provider": "chatgpt",
+    "prompt": ".ai/prompts/architect.md",
+    "note": "ChatGPT is the architecture and product authority. It is a human-directed authority, not an automated endpoint; next-task generation is requested from it and the loop waits until its brief is applied."
+  },
+  "afterTaskId": "INV-001",
+  "merge": {
+    "taskId": "INV-001",
+    "prNumber": 1,
+    "headSha": "d1b6b347ae4a015d30e6b2f1a23e878e263ece18",
+    "mergeCommit": "9cab21550525c52f8e436692d402750c9a4fa1c1",
+    "mergedAt": "2026-10-05T07:24:21Z",
+    "reconciledAt": "2026-10-05T08:11:50.540Z",
+    "ciStatus": "success"
+  },
+  "phase": "Phase 2 — Visual System",
+  "suggestedId": "INV-002",
+  "dependsOn": [
+    "INV-001"
+  ],
+  "instructions": [
+    "Produce exactly one task brief for the next phase in docs/PHASES.md.",
+    "Output a JSON task object satisfying .ai/schemas/task-queue.schema.json.",
+    "Provide the Markdown brief at .ai/tasks/INV-002.md.",
+    "Apply it with: node .ai/scripts/next-task.mjs apply --file <json> [--brief <md>]",
+    "Do not invent temple facts, dates, timings, historical or religious claims."
+  ]
+}
