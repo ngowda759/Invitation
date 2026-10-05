@@ -92,7 +92,6 @@ jobs:
           {
             "version": 1,
             "loopId": "INV-001",
-            "taskIdPrefix": "INV",
             "maxReviewRounds": 3,
             "baseBranch": "main",
             "branchPrefix": "automation/",
