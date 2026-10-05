@@ -1,0 +1,331 @@
+name: Bootstrap Invitation AI Loop v6
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    name: Bootstrap Invitation automation
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Invitation
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Configure Git
+        run: |
+          git config user.name "Invitation Automation"
+          git config user.email "automation@users.noreply.github.com"
+
+      - name: Clone proven loop source
+        run: |
+          git clone --depth 1 https://github.com/ngowda759/Badminton.git _badminton-loop-source
+
+      - name: Import automation engine
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          rm -rf .ai
+          mkdir -p .ai
+
+          cp -R _badminton-loop-source/.ai/scripts .ai/
+          cp -R _badminton-loop-source/.ai/prompts .ai/
+          cp -R _badminton-loop-source/.ai/schemas .ai/
+          cp -R _badminton-loop-source/.ai/templates .ai/
+
+          for wf in \
+            ai-loop-implement.yml \
+            ai-loop-review.yml \
+            ai-loop-next-task.yml \
+            ai-loop-merge-gate.yml \
+            ai-loop-validate.yml
+          do
+            cp "_badminton-loop-source/.github/workflows/$wf" ".github/workflows/$wf"
+          done
+
+          # Adapt imported generic engine references.
+          find .ai .github/workflows \
+            -type f \
+            \( -name '*.mjs' -o -name '*.json' -o -name '*.md' -o -name '*.yml' -o -name '*.yaml' \) \
+            -print0 |
+          xargs -0 -r perl -0pi -e '
+            s/ngowda759\/Badminton/ngowda759\/Invitation/g;
+            s/Badminton/Invitation/g;
+            s/AI-([0-9][0-9]*)/INV-$1/g;
+            s/AI-/INV-/g;
+          '
+
+          rm -rf _badminton-loop-source
+
+      - name: Create Invitation loop configuration
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p .ai/state docs/tasks
+
+          cat > .ai/loop.config.json <<'JSON'
+          {
+            "loopId": "INV-001",
+            "maxReviewRounds": 3,
+            "baseBranch": "main",
+            "branchPrefix": "automation/",
+            "ciWorkflow": "CI",
+            "ciWorkflowFile": ".github/workflows/ci.yml",
+            "requiredChecks": [
+              "Lint, typecheck, test, build",
+              "Invitation AntiSlop"
+            ],
+            "protectedPaths": [
+              ".github/workflows/",
+              ".env",
+              ".env.*",
+              "docs/constitution.md"
+            ],
+            "secrets": {
+              "required": [
+                "OPENHANDS_API_KEY",
+                "OPENROUTER_API_KEY"
+              ],
+              "optional": [
+                "OPENHANDS_HOST",
+                "OPENROUTER_REVIEW_MODEL"
+              ]
+            },
+            "review": {
+              "provider": "openrouter",
+              "endpoint": "https://openrouter.ai/api/v1",
+              "model": "openrouter/free"
+            },
+            "mergeGate": {
+              "enabled": true,
+              "requireCiGreen": true,
+              "requireReviewPassed": true,
+              "requireHumanApproval": false
+            },
+            "automation": {
+              "autoAdvanceTasks": true,
+              "autoMerge": true,
+              "maxConcurrentTasks": 1,
+              "protectedPathStop": true,
+              "nextTask": {
+                "enabled": true
+              }
+            },
+            "statePaths": {
+              "loopState": ".ai/state/loop-state.json",
+              "taskQueue": ".ai/state/task-queue.json",
+              "reviewLog": ".ai/state/review-log.jsonl",
+              "taskDirectory": "docs/tasks"
+            }
+          }
+          JSON
+
+          cat > .ai/state/review-log.jsonl <<'EOF'
+          EOF
+
+          cat > .ai/state/loop-state.json <<'JSON'
+          {
+            "loopId": "INV-001",
+            "status": "next-task",
+            "currentTaskId": null
+          }
+          JSON
+
+          cat > .ai/state/task-queue.json <<'JSON'
+          {
+            "tasks": [
+              {
+                "id": "INV-001",
+                "phase": "P1 Foundation",
+                "status": "approved",
+                "title": "Initialize Application Foundation",
+                "priority": 1
+              }
+            ]
+          }
+          JSON
+
+          cat > docs/tasks/INV-001.md <<'EOF'
+          # INV-001 — Initialize Application Foundation
+
+          ## Objective
+
+          Establish the production-ready application foundation for Invitation.
+
+          ## Scope
+
+          - Next.js App Router with TypeScript
+          - Tailwind CSS and shadcn/ui foundation
+          - Clean project structure
+          - ESLint and formatting
+          - Vitest and Playwright foundations
+          - Responsive base layout
+          - Metadata and SEO foundation
+          - GitHub CI for lint, typecheck, test and build
+
+          ## Explicitly out of scope
+
+          - Hero implementation
+          - Opening animation
+          - Temple content
+          - Database
+          - Authentication
+          - Rayaramathaynk runtime APIs
+          - Raya AI
+          - Complex application state
+
+          ## Acceptance
+
+          - Application installs with npm ci
+          - Lint passes
+          - Typecheck passes
+          - Tests pass
+          - Production build passes
+          - Mobile-first base layout exists
+          - No fabricated temple facts are introduced
+          - Changes are delivered through a PR, not directly to main
+          EOF
+
+      - name: Ensure existing CI has explicit permissions
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -f .github/workflows/ci.yml
+
+          if ! grep -Eq '^[[:space:]]*permissions:[[:space:]]*$' .github/workflows/ci.yml; then
+            tmp="$(mktemp)"
+            {
+              awk '
+                BEGIN { inserted=0 }
+                /^name:/ && inserted==0 {
+                  print
+                  print ""
+                  print "permissions:"
+                  print "  contents: read"
+                  inserted=1
+                  next
+                }
+                { print }
+              ' .github/workflows/ci.yml
+            } > "$tmp"
+            mv "$tmp" .github/workflows/ci.yml
+          fi
+
+          grep -Eq '^[[:space:]]*permissions:[[:space:]]*$' .github/workflows/ci.yml
+
+      - name: Create Invitation AntiSlop gate
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          cat > .github/workflows/invitation-antislop.yml <<'YAML'
+          name: Invitation AntiSlop
+
+          on:
+            pull_request:
+              branches:
+                - main
+
+          permissions:
+            contents: read
+            pull-requests: read
+
+          jobs:
+            antislop:
+              name: Invitation quality gate
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                  with:
+                    fetch-depth: 0
+
+                - name: Check project boundaries
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    if grep -RIn --exclude-dir=.git --exclude='bootstrap-invitation-loop-v*.yml' \
+                      -E 'ngowda759/Rayaramathaynk|Rayaramathaynk AI|Raya AI' \
+                      .ai .github docs README.md 2>/dev/null; then
+                      echo "Forbidden Rayaramathaynk runtime dependency/reference detected."
+                      exit 1
+                    fi
+
+                - name: Check obvious slop markers
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    if grep -RIn --exclude-dir=.git \
+                      -E 'TODO[[:space:]]*:[[:space:]]*AI|lorem ipsum|PLACEHOLDER_CONTENT' \
+                      app src components pages 2>/dev/null; then
+                      echo "Obvious placeholder/slop content detected."
+                      exit 1
+                    fi
+          YAML
+
+      - name: Validate generated automation
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          test -f .ai/loop.config.json
+          test -f .ai/state/loop-state.json
+          test -f .ai/state/task-queue.json
+          test -f .ai/state/review-log.jsonl
+          test -f docs/tasks/INV-001.md
+          test -f .github/workflows/invitation-antislop.yml
+
+          node --version
+          node .ai/scripts/validate-loop-config.mjs
+
+          # Validate workflow structure. Existing CI is intentionally retained;
+          # v6 only adds the minimum explicit read permission if it was missing.
+          node .ai/scripts/validate-workflows.mjs
+
+          # The bootstrap file necessarily contains the temporary source URL.
+          # Validate only generated engine/config/workflows, excluding bootstrap files.
+          if grep -RIn --exclude-dir=.git \
+            --exclude='bootstrap-invitation-loop-v*.yml' \
+            -E 'ngowda759/Badminton|Badminton' \
+            .ai \
+            .github/workflows/ai-loop-implement.yml \
+            .github/workflows/ai-loop-review.yml \
+            .github/workflows/ai-loop-next-task.yml \
+            .github/workflows/ai-loop-merge-gate.yml \
+            .github/workflows/ai-loop-validate.yml; then
+            echo "Generated Invitation automation still contains Badminton references."
+            exit 1
+          fi
+
+          node - <<'NODE'
+          const fs = require('fs');
+          const config = JSON.parse(fs.readFileSync('.ai/loop.config.json', 'utf8'));
+          const state = JSON.parse(fs.readFileSync('.ai/state/loop-state.json', 'utf8'));
+          const queue = JSON.parse(fs.readFileSync('.ai/state/task-queue.json', 'utf8'));
+
+          if (config.loopId !== 'INV-001') throw new Error('Unexpected loopId');
+          if (state.loopId !== 'INV-001') throw new Error('Unexpected state loopId');
+          if (!queue.tasks?.some(t => t.id === 'INV-001')) throw new Error('INV-001 missing');
+          if ('taskIdPrefix' in config) throw new Error('taskIdPrefix must not exist');
+          NODE
+
+      - name: Commit bootstrap
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          git add .ai .github/workflows docs/tasks/INV-001.md
+
+          if git diff --cached --quiet; then
+            echo "No bootstrap changes to commit."
+            exit 0
+          fi
+
+          git commit -m "chore: bootstrap Invitation autonomous AI loop v6"
+          git push origin main
