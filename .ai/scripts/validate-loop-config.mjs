@@ -148,13 +148,32 @@ if (!/not.{0,40}ChatGPT|never.{0,40}ChatGPT|machine reviewer/i.test(config.revie
   fail("review.note must state the reviewer is a machine reviewer and not ChatGPT");
 }
 
-// 11. The architect authority must be ChatGPT and honest about not being automated.
-if (config.architect.provider !== "chatgpt") fail("architect provider must be chatgpt");
+// 11. The architecture authority must be the configured autonomous worker, and the
+//     loop must be able to consume the request without a human prompt.
+if (config.architect.provider !== "openhands") fail("architect provider must be openhands");
 if (!existsSync(fromRepo(config.architect.prompt))) {
   fail(`architect prompt missing: ${config.architect.prompt}`);
 }
-if (!/human-directed|not an automated endpoint/i.test(config.architect.note ?? "")) {
-  fail("architect.note must state that ChatGPT is a human-directed authority, not an automated endpoint");
+if (!/autonomous worker|no human prompt|without a human prompt/i.test(config.architect.note ?? "")) {
+  fail("architect.note must state that the configured autonomous worker consumes the request without a human prompt");
+}
+
+// 11b. OpenHands dispatch must be wired: record path, generation and dispatch scripts.
+for (const script of [
+  ".ai/scripts/lib/generate.mjs",
+  ".ai/scripts/lib/openhands.mjs",
+  ".ai/scripts/openhands-dispatch.mjs",
+]) {
+  if (!existsSync(fromRepo(script))) fail(`autonomous dispatch script missing: ${script}`);
+}
+const dispatchRecord = config.openhands.dispatchRecord;
+if (dispatchRecord && existsSync(fromRepo(dispatchRecord))) {
+  const dispatchSchema = readJson(".ai/schemas/openhands-dispatch.schema.json");
+  const record = readJson(dispatchRecord);
+  for (const e of validate(dispatchSchema, record)) fail(`openhands-dispatch.json ${e}`);
+  if (record.status === "dispatched" && !record.conversationId) {
+    fail("openhands-dispatch.json records a successful dispatch without a conversation id");
+  }
 }
 
 // 12. Post-merge reconciliation must be wired: scripts present and a workflow triggers after merge.
@@ -170,6 +189,18 @@ if (!existsSync(fromRepo(reconcileWorkflow))) {
     fail("reconciliation workflow must trigger on pull_request closed");
   }
   if (!/reconcile\.mjs/.test(wf)) fail("reconciliation workflow must invoke .ai/scripts/reconcile.mjs");
+}
+
+// 12b. The autonomous autopilot stage must be wired: it generates the next task and
+//      dispatches the worker, and it guards against recursion.
+const autopilotWorkflow = ".github/workflows/invitation-autopilot.yml";
+if (!existsSync(fromRepo(autopilotWorkflow))) {
+  fail(`autopilot workflow missing: ${autopilotWorkflow}`);
+} else {
+  const wf = readText(autopilotWorkflow);
+  if (!/next-task\.mjs generate/.test(wf)) fail("autopilot workflow must run next-task.mjs generate");
+  if (!/openhands-dispatch\.mjs/.test(wf)) fail("autopilot workflow must run openhands-dispatch.mjs");
+  if (!/workflow_dispatch/.test(wf)) fail("autopilot workflow must support workflow_dispatch");
 }
 
 notes.push(`states: ${machineStates.length}`);

@@ -20,10 +20,13 @@ configuration-driven and does **not** import or adapt any other repository's eng
 
 ## Roles
 
-- **ChatGPT** — architecture, product requirements, design direction, UX, acceptance
-  criteria, and final quality authority. ChatGPT is a human-directed authority; it is
-  not an automated endpoint in this repository.
-- **OpenHands** — implementation, tests, fixes, PR creation.
+- **Architect** — architecture, product requirements, design direction, UX, acceptance
+  criteria, and final quality authority. Its prompt (`.ai/prompts/architect.md`) is the
+  governing specification for task generation; the configured autonomous worker
+  (OpenHands) consumes the next-task request automatically, so no human prompt is
+  required for each task.
+- **OpenHands** — the autonomous worker: generates the next task from the request,
+  implements it, adds tests, fixes issues and opens the PR.
 - **OpenRouter** — automated machine review only. An OpenRouter response is **never**
   represented as a ChatGPT review.
 - **AntiSlop** — objective, blocking quality gate.
@@ -51,8 +54,9 @@ Rules enforced by `.ai/scripts/lib/loop-state.mjs`:
 | `antislop.mjs` | Blocking AntiSlop gate; emits machine-readable JSON |
 | `loop-state.mjs` | Inspect / advance loop state (never skips a state) |
 | `dispatch-openhands.mjs` | Configuration-driven OpenHands conversation dispatch |
+| `openhands-dispatch.mjs` | Autonomous dispatch of the current task (idempotent, records `.ai/state/openhands-dispatch.json`) |
 | `reconcile.mjs` | Verify a merged task against GitHub and replay the legal path to `NEXT_PHASE` |
-| `next-task.mjs` | Inspect / apply the next task returned by the architecture authority |
+| `next-task.mjs` | Inspect / generate / apply the next task from the pending request |
 
 Run everything locally with:
 

@@ -7,21 +7,34 @@ import { readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
-import { describe, expect, it } from "vitest";
+import { afterAll, beforeAll, describe, expect, it } from "vitest";
 
 import { validate } from "../../.ai/scripts/lib/schema.mjs";
 import { allowedNext } from "../../.ai/scripts/lib/loop-state.mjs";
+import { makeScratch, readJsonFile } from "./helpers/loop-harness.mjs";
 
 const repoRoot = resolve(dirname(fileURLToPath(import.meta.url)), "../..");
 const read = (p) => JSON.parse(readFileSync(resolve(repoRoot, p), "utf8"));
 
 const config = read(".ai/loop.config.json");
-const state = read(".ai/state/loop-state.json");
-const queue = read(".ai/state/task-queue.json");
 const configSchema = read(".ai/schemas/loop-config.schema.json");
 const stateSchema = read(".ai/schemas/loop-state.schema.json");
 const queueSchema = read(".ai/schemas/task-queue.schema.json");
 const reviewSchema = read(".ai/schemas/review-report.schema.json");
+
+// The loop state and queue are read from a deterministic scratch seed so these
+// assertions do not depend on how far the live loop has progressed on `main`.
+let scratch;
+let state;
+let queue;
+beforeAll(() => {
+  scratch = makeScratch();
+  state = readJsonFile(scratch, ".ai/state/loop-state.json");
+  queue = readJsonFile(scratch, ".ai/state/task-queue.json");
+});
+afterAll(() => {
+  scratch = undefined;
+});
 
 describe("schema validator", () => {
   it("accepts a valid document", () => {
@@ -77,9 +90,9 @@ describe("loop configuration", () => {
     expect(serialized).not.toMatch(/sk-[A-Za-z0-9]{20,}/);
   });
 
-  it("names ChatGPT as the architecture authority, honestly marked non-automated", () => {
-    expect(config.architect.provider).toBe("chatgpt");
-    expect(config.architect.note).toMatch(/human-directed|not an automated endpoint/i);
+  it("names OpenHands as the autonomous architecture worker, honestly marked non-human", () => {
+    expect(config.architect.provider).toBe("openhands");
+    expect(config.architect.note).toMatch(/autonomous worker|no human prompt|without a human prompt/i);
     expect(config.architect.prompt).toMatch(/^\.ai\/prompts\//);
   });
 });

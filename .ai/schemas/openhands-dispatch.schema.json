@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://invitation.local/schemas/openhands-dispatch.schema.json",
+  "title": "Invitation OpenHands dispatch record",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "updatedAt", "taskId", "status", "sourceState", "conversationId", "startTaskId", "dispatchedAt", "reason"],
+  "properties": {
+    "version": { "const": 1 },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "taskId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$" },
+    "status": { "enum": ["dispatched", "blocked"] },
+    "sourceState": { "type": "string", "pattern": "^[A-Z][A-Z_]*$" },
+    "conversationId": { "type": ["string", "null"] },
+    "startTaskId": { "type": ["string", "null"] },
+    "dispatchedAt": { "type": ["string", "null"], "format": "date-time" },
+    "reason": { "type": ["string", "null"] }
+  }
+}

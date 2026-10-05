@@ -93,13 +93,15 @@
     "openhands": {
       "type": "object",
       "additionalProperties": false,
-      "required": ["enabled", "apiKeyEnvVar", "hostEnvVar", "hostDefault", "conversationEndpoint"],
+      "required": ["enabled", "apiKeyEnvVar", "hostEnvVar", "hostDefault", "conversationEndpoint", "startTaskEndpoint", "dispatchRecord"],
       "properties": {
         "enabled": { "type": "boolean" },
         "apiKeyEnvVar": { "type": "string", "minLength": 1 },
         "hostEnvVar": { "type": "string", "minLength": 1 },
         "hostDefault": { "type": "string", "format": "uri", "pattern": "^https://" },
         "conversationEndpoint": { "type": "string", "pattern": "^/" },
+        "startTaskEndpoint": { "type": "string", "pattern": "^/" },
+        "dispatchRecord": { "type": "string", "pattern": "^\\.ai/state/.+\\.json$" },
         "repos": {
           "type": "array",
           "items": { "type": "string", "minLength": 1 }
@@ -111,13 +113,13 @@
       "additionalProperties": false,
       "required": ["provider", "prompt", "request", "timeoutMinutes"],
       "properties": {
-        "provider": { "const": "chatgpt" },
+        "provider": { "const": "openhands" },
         "prompt": { "type": "string", "pattern": "^\\.ai/prompts/.+\\.md$" },
         "request": { "type": "string", "pattern": "^\\.ai/state/.+\\.json$" },
         "timeoutMinutes": { "type": "integer", "minimum": 1 },
         "note": {
           "type": "string",
-          "description": "Must state that ChatGPT is a human-directed authority, not an automated endpoint."
+          "description": "Must state that the configured autonomous worker consumes the next-task request without a human prompt."
         }
       }
     },

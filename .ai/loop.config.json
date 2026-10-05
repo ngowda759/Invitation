@@ -38,15 +38,17 @@
     "apiKeyEnvVar": "OPENHANDS_API_KEY",
     "hostEnvVar": "OPENHANDS_HOST",
     "hostDefault": "https://app.all-hands.dev",
-    "conversationEndpoint": "/api/conversations",
+    "conversationEndpoint": "/api/v1/app-conversations",
+    "startTaskEndpoint": "/api/v1/app-conversations/start-tasks",
+    "dispatchRecord": ".ai/state/openhands-dispatch.json",
     "repos": ["ngowda759/Invitation"]
   },
   "architect": {
-    "provider": "chatgpt",
+    "provider": "openhands",
     "prompt": ".ai/prompts/architect.md",
     "request": ".ai/state/next-task-request.json",
     "timeoutMinutes": 30,
-    "note": "ChatGPT is the architecture and product authority. It is a human-directed authority, not an automated endpoint; next-task generation is requested from it and the loop waits until its brief is applied."
+    "note": "The architecture prompt is the governing specification for task generation. The configured autonomous worker (OpenHands) consumes the next-task request automatically; no human prompt is required for each task."
   },
   "stateMachine": {
     "states": [

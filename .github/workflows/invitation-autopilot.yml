@@ -1,0 +1,96 @@
+name: Invitation Autopilot
+
+# Event-driven autonomous loop stage. After a merge is reconciled (which pushes the
+# updated `.ai/state` back to main), this workflow:
+#   1. generates the next task when the loop is at NEXT_PHASE with a pending request;
+#   2. dispatches the READY task to OpenHands.
+# Both steps are idempotent, so a duplicate run (including the push this workflow
+# itself makes) is a no-op and never recurses: a run that changes nothing makes no
+# commit, so it fires no further event.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - ".ai/state/**"
+      - ".ai/tasks/**"
+  workflow_dispatch:
+
+# Least privilege: reading state needs read; persisting the generated state and
+# dispatch record to main needs contents: write.
+permissions:
+  contents: write
+
+concurrency:
+  group: autopilot-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  autopilot:
+    name: Generate next task and dispatch worker
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          token: ${{ secrets.INVITATION_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # Generation is dependency-free Node ESM. It only acts when the loop is at
+      # NEXT_PHASE with a pending request; otherwise it reports a no-op. A BLOCKED
+      # generation exits non-zero: the blocked state is still persisted below, and the
+      # red run is the signal for human attention.
+      - name: Generate next task
+        id: generate
+        run: |
+          set -euo pipefail
+          node .ai/scripts/next-task.mjs generate --json | tee /tmp/generate.json
+          node .ai/scripts/validate-loop-config.mjs
+
+      - name: Persist generated task
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.INVITATION_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "invitation-loop"
+          git config user.email "invitation-loop@users.noreply.github.com"
+          git add -A -- .ai/state .ai/tasks
+          if git diff --cached --quiet; then
+            echo "No generated state to persist."
+            exit 0
+          fi
+          git commit -m "chore(loop): generate next task"
+          git push
+
+      # Dispatch is idempotent: a task with a recorded dispatch is never dispatched
+      # again. A missing credential records a blocked dispatch and exits non-zero.
+      - name: Dispatch OpenHands
+        if: steps.generate.outcome == 'success'
+        env:
+          OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
+          OPENHANDS_HOST: ${{ secrets.OPENHANDS_HOST }}
+        run: |
+          set -euo pipefail
+          node .ai/scripts/openhands-dispatch.mjs --json | tee /tmp/dispatch.json
+
+      - name: Persist dispatch record
+        if: always()
+        env:
+          GITHUB_TOKEN: ${{ secrets.INVITATION_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "invitation-loop"
+          git config user.email "invitation-loop@users.noreply.github.com"
+          git add -A -- .ai/state
+          if git diff --cached --quiet; then
+            echo "No dispatch record to persist."
+            exit 0
+          fi
+          git commit -m "chore(loop): record OpenHands dispatch"
+          git push

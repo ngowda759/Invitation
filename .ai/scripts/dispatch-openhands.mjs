@@ -46,13 +46,21 @@ const prompt = [
   readText(briefPath),
   "",
   "--- DELIVERY ---",
-  `Deliver through a pull request against ${config.baseBranch} on branch ${config.branchPrefix}${taskId.toLowerCase()}-foundation.`,
+  `Deliver through a pull request against ${config.baseBranch}.`,
   "Do not push to main. Do not enable auto-merge. Do not start another task.",
 ].join("\n");
 
+// The OpenHands Cloud V1 app-server contract: `initial_message.content` is a list of
+// parts and the repository is selected explicitly.
 const payload = {
-  initial_user_msg: prompt,
-  repos: config.openhands.repos,
+  initial_message: {
+    role: "user",
+    content: [{ type: "text", text: prompt }],
+    run: true,
+  },
+  selected_repository: config.openhands.repos?.[0],
+  selected_branch: config.baseBranch,
+  title: `Invitation ${taskId}`,
 };
 
 if (!config.openhands.enabled) {
@@ -70,7 +78,13 @@ if (!apiKey) {
 
 if (dryRun) {
   console.log(`DRY RUN: would POST to ${endpoint}`);
-  console.log(JSON.stringify({ ...payload, initial_user_msg: "<redacted prompt>" }, null, 2));
+  console.log(
+    JSON.stringify(
+      { ...payload, initial_message: { ...payload.initial_message, content: [{ type: "text", text: "<redacted prompt>" }] } },
+      null,
+      2,
+    ),
+  );
   process.exit(0);
 }
 
