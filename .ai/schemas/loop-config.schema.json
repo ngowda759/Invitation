@@ -14,6 +14,7 @@
     "review",
     "antislop",
     "openhands",
+    "architect",
     "stateMachine",
     "secrets",
     "limits"
@@ -102,6 +103,21 @@
         "repos": {
           "type": "array",
           "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "architect": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "prompt", "request", "timeoutMinutes"],
+      "properties": {
+        "provider": { "const": "chatgpt" },
+        "prompt": { "type": "string", "pattern": "^\\.ai/prompts/.+\\.md$" },
+        "request": { "type": "string", "pattern": "^\\.ai/state/.+\\.json$" },
+        "timeoutMinutes": { "type": "integer", "minimum": 1 },
+        "note": {
+          "type": "string",
+          "description": "Must state that ChatGPT is a human-directed authority, not an automated endpoint."
         }
       }
     },

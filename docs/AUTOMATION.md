@@ -59,6 +59,15 @@ PLANNED -> READY -> IMPLEMENTING -> TESTING -> ANTISLOP_REVIEW
 A phase cannot advance without evidence for its applicable gates, and no transition
 may skip a state. Every transition is validated and persisted.
 
+## Post-merge reconciliation
+
+A merge is detected, verified against GitHub and reconciled through the legal path to
+`NEXT_PHASE` by `.ai/scripts/reconcile.mjs`
+(`.github/workflows/invitation-reconcile.yml` triggers on `pull_request: closed`).
+The next task is then *requested* from the architecture authority and applied with
+`.ai/scripts/next-task.mjs`. See
+`docs/implementation/POST-MERGE-RECONCILIATION.md`.
+
 ## Phase 1
 
 Current task: `INV-001` (Initialize Application Foundation). It is the only task

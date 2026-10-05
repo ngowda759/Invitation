@@ -41,6 +41,13 @@
     "conversationEndpoint": "/api/conversations",
     "repos": ["ngowda759/Invitation"]
   },
+  "architect": {
+    "provider": "chatgpt",
+    "prompt": ".ai/prompts/architect.md",
+    "request": ".ai/state/next-task-request.json",
+    "timeoutMinutes": 30,
+    "note": "ChatGPT is the architecture and product authority. It is a human-directed authority, not an automated endpoint; next-task generation is requested from it and the loop waits until its brief is applied."
+  },
   "stateMachine": {
     "states": [
       "PLANNED",

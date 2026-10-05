@@ -1,6 +1,4 @@
-import { writeFileSync } from "node:fs";
-
-import { fromRepo, loadConfig, loadState } from "./core.mjs";
+import { loadConfig, loadState, writeJsonAtomic } from "./core.mjs";
 
 /** Next states allowed from `from` according to the configured state machine. */
 export function allowedNext(config, from) {
@@ -26,7 +24,7 @@ export function assertKnownState(config, state) {
 }
 
 export function saveState(config, state) {
-  writeFileSync(fromRepo(config.paths.state), `${JSON.stringify(state, null, 2)}\n`);
+  writeJsonAtomic(config.paths.state, state);
 }
 
 /**

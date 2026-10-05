@@ -10,6 +10,8 @@
   "lastVerdict": null,
   "lastCiStatus": null,
   "blockedReason": null,
+  "lastMerge": null,
+  "nextTask": null,
   "completedTasks": [],
   "history": [
     {
