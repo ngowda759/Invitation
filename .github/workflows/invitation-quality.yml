@@ -1,0 +1,56 @@
+name: Invitation Quality Gate
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  constitution:
+    name: Constitution Check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify project boundary
+        run: |
+          test -f README.md
+          test -f docs/PRODUCT.md
+          test -f docs/ARCHITECTURE.md
+          test -f docs/DESIGN-SYSTEM.md
+          test -f docs/QUALITY-GATES.md
+          test -f docs/AGENT-CONTRACT.md
+          grep -q "Rayaramathaynk" README.md
+          grep -q "must not" README.md
+
+  application:
+    name: Application Checks
+    runs-on: ubuntu-latest
+    needs: constitution
+    if: ${{ hashFiles('package.json') != '' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run lint --if-present
+      - run: npx tsc --noEmit --if-present
+      - run: npm test --if-present
+      - run: npm run build --if-present
+
+  agent-contract:
+    name: Agent Contract Check
+    runs-on: ubuntu-latest
+    needs: constitution
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify agent contracts
+        run: |
+          test -f .ai/agents/openhands.md
+          test -f .ai/agents/antislop.md
+          test -f .ai/agents/chatgpt.md
+          test -f .ai/tasks/INV-P1-001.md
