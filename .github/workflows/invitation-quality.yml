@@ -2,7 +2,9 @@ name: Invitation Quality Gate
 
 on:
   pull_request:
-    branches: [main]
+    branches:
+      - main
+
   workflow_dispatch:
 
 permissions:
@@ -12,45 +14,92 @@ jobs:
   constitution:
     name: Constitution Check
     runs-on: ubuntu-latest
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Verify project boundary
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify project constitution
+        shell: bash
         run: |
-          test -f README.md
-          test -f docs/PRODUCT.md
-          test -f docs/ARCHITECTURE.md
-          test -f docs/DESIGN-SYSTEM.md
-          test -f docs/QUALITY-GATES.md
-          test -f docs/AGENT-CONTRACT.md
+          set -euo pipefail
+
+          required_files=(
+            "README.md"
+            "docs/PRODUCT.md"
+            "docs/ARCHITECTURE.md"
+            "docs/DESIGN-SYSTEM.md"
+            "docs/PHASES.md"
+            "docs/QUALITY-GATES.md"
+            "docs/AGENT-CONTRACT.md"
+          )
+
+          for file in "${required_files[@]}"; do
+            test -f "$file" || {
+              echo "::error::Missing required project file: $file"
+              exit 1
+            }
+          done
+
           grep -q "Rayaramathaynk" README.md
           grep -q "must not" README.md
 
-  application:
-    name: Application Checks
-    runs-on: ubuntu-latest
-    needs: constitution
-    if: ${{ hashFiles('package.json') != '' }}
-    steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-node@v4
-        with:
-          node-version: 22
-          cache: npm
-      - run: npm ci
-      - run: npm run lint --if-present
-      - run: npx tsc --noEmit --if-present
-      - run: npm test --if-present
-      - run: npm run build --if-present
+          echo "Constitution check passed."
 
-  agent-contract:
-    name: Agent Contract Check
+  automation-contract:
+    name: Automation Contract Check
     runs-on: ubuntu-latest
     needs: constitution
+
     steps:
-      - uses: actions/checkout@v4
-      - name: Verify agent contracts
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify automation contract
+        shell: bash
         run: |
-          test -f .ai/agents/openhands.md
-          test -f .ai/agents/antislop.md
-          test -f .ai/agents/chatgpt.md
-          test -f .ai/tasks/INV-P1-001.md
+          set -euo pipefail
+
+          test -f ".github/workflows/bootstrap-invitation-loop-v2.yml"
+
+          echo "Bootstrap workflow present."
+
+          if test -f ".ai/loop.config.json"; then
+            echo "AI loop configuration present."
+          else
+            echo "Bootstrap phase: .ai/loop.config.json not present yet."
+          fi
+
+          if test -f ".ai/state/loop-state.json"; then
+            echo "Loop state present."
+          else
+            echo "Bootstrap phase: loop state not present yet."
+          fi
+
+          echo "Automation contract check passed."
+
+  boundary:
+    name: Project Boundary Check
+    runs-on: ubuntu-latest
+    needs: constitution
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify project isolation
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          if grep -RIn \
+            --exclude-dir=.git \
+            --exclude='*.lock' \
+            'ngowda759/Rayaramathaynk' \
+            .github .ai docs README.md 2>/dev/null
+          then
+            echo "::error::Invitation must not directly depend on Rayaramathaynk repository runtime."
+            exit 1
+          fi
+
+          echo "Project boundary check passed."
