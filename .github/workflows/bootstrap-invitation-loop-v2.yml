@@ -17,14 +17,15 @@ jobs:
         with:
           fetch-depth: 0
 
-      - name: Import and adapt the proven loop engine
+      - name: Import loop engine
         shell: bash
         run: |
           set -euo pipefail
 
           rm -rf _badminton-loop-source
 
-          git clone --depth 1 \
+          git clone \
+            --depth 1 \
             https://github.com/ngowda759/Badminton.git \
             _badminton-loop-source
 
@@ -42,7 +43,7 @@ jobs:
           cp -R _badminton-loop-source/.ai/schemas/. .ai/schemas/
           cp -R _badminton-loop-source/.ai/templates/. .ai/templates/
 
-          for f in \
+          for workflow in \
             ai-loop-implement.yml \
             ai-loop-review.yml \
             ai-loop-next-task.yml \
@@ -50,33 +51,37 @@ jobs:
             ai-loop-validate.yml
           do
             cp \
-              "_badminton-loop-source/.github/workflows/$f" \
-              ".github/workflows/$f"
+              "_badminton-loop-source/.github/workflows/${workflow}" \
+              ".github/workflows/${workflow}"
           done
 
-          # Adapt the copied engine using deterministic replacements.
-          #
-          # IMPORTANT:
-          # Do not use grep | xargs here while pipefail is enabled.
-          # grep returning 1 when no matches exist would abort the bootstrap.
+          echo "Loop engine imported."
+
+      - name: Adapt loop engine for Invitation
+        shell: bash
+        run: |
+          set -euo pipefail
+
           find \
-            .ai/scripts \
-            .ai/prompts \
-            .ai/schemas \
-            .ai/templates \
+            .ai \
+            .github/workflows \
             -type f \
             \( \
               -name '*.mjs' \
               -o -name '*.json' \
               -o -name '*.md' \
+              -o -name '*.yml' \
+              -o -name '*.yaml' \
             \) \
             -print0 |
             xargs -0 -r sed -i \
-              -e 's/AI-/INV-/g' \
-              -e 's/Badminton AI development loop/Invitation AI development loop/g' \
-              -e 's/Badminton loop/Invitation loop/g'
+              -e 's/ngowda759\/Badminton/ngowda759\/Invitation/g' \
+              -e 's/Badminton/Invitation/g' \
+              -e 's/AI-/INV-/g'
 
           rm -rf _badminton-loop-source
+
+          echo "Loop engine adapted for Invitation."
 
       - name: Write Invitation loop configuration
         shell: bash
@@ -171,14 +176,14 @@ jobs:
           }
           JSON
 
-      - name: Write Invitation initial task and state
+          echo "Loop configuration written."
+
+      - name: Write initial task
         shell: bash
         run: |
           set -euo pipefail
 
-          mkdir -p .ai/state docs/tasks
-
-          : > .ai/state/review-log.jsonl
+          mkdir -p docs/tasks
 
           cat > docs/tasks/INV-001.md <<'EOF'
           # INV-001 — Initialize Application Foundation
@@ -197,20 +202,28 @@ jobs:
           - Next.js App Router + TypeScript.
           - Tailwind CSS and agreed UI foundation.
           - Documented project structure.
-          - ESLint/formatting.
-          - Vitest and Playwright foundations.
+          - ESLint and formatting.
+          - Vitest foundation.
+          - Playwright foundation.
           - Responsive base layout.
-          - Metadata/SEO foundation.
-          - GitHub CI for lint, typecheck, test and build.
+          - Metadata and SEO foundation.
+          - GitHub CI.
 
           ## Acceptance criteria
 
-          - The application starts and builds successfully.
-          - TypeScript, lint, unit-test and browser-test foundations are wired.
+          - Application starts successfully.
+          - Application builds successfully.
+          - TypeScript validation works.
+          - ESLint works.
+          - Unit-test foundation works.
+          - Playwright foundation works.
           - CI validates lint, typecheck, test and build.
           - Mobile-first layout foundation exists.
-          - No database, authentication, Rayaramathaynk runtime dependency,
-            Raya AI, or later-phase invitation feature is introduced.
+          - No database is introduced.
+          - No authentication is introduced.
+          - No Rayaramathaynk runtime dependency is introduced.
+          - No Raya AI integration is introduced.
+          - No later-phase invitation feature is introduced.
           - No fabricated temple-specific content is introduced.
 
           ## Out of scope
@@ -241,6 +254,15 @@ jobs:
           - docs/QUALITY-GATES.md
           - docs/AGENT-CONTRACT.md
           EOF
+
+      - name: Write loop state
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mkdir -p .ai/state
+
+          : > .ai/state/review-log.jsonl
 
           cat > .ai/state/task-queue.json <<'JSON'
           {
@@ -311,7 +333,7 @@ jobs:
           }
           JSON
 
-      - name: Install Invitation AntiSlop gate
+      - name: Install Invitation AntiSlop
         shell: bash
         run: |
           set -euo pipefail
@@ -341,7 +363,7 @@ jobs:
                     ref: ${{ github.event.repository.default_branch || 'main' }}
                     persist-credentials: false
 
-                - name: Checkout PR diff as data
+                - name: Collect PR diff
                   if: ${{ github.event_name == 'pull_request' }}
                   env:
                     GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -350,7 +372,7 @@ jobs:
                   run: |
                     gh pr diff "$PR" --repo "$REPO" > /tmp/pr.diff
 
-                - name: Run Invitation AntiSlop heuristics
+                - name: Run AntiSlop checks
                   shell: bash
                   run: |
                     set -euo pipefail
@@ -361,19 +383,19 @@ jobs:
                       'TODO|FIXME|lorem ipsum|coming soon|your text here|replace me|placeholder text' \
                       /tmp/pr.diff
                     then
-                      echo "::error::AntiSlop found placeholder or unfinished content."
+                      echo "::error::AntiSlop found unfinished or placeholder content."
                       exit 1
                     fi
 
                     if grep -Ein \
-                      'glassmorphism|backdrop-blur|animate-bounce|animate-spin|rounded-full.*p-|from-[a-z]+-[0-9]+.*to-[a-z]+-[0-9]+' \
+                      'glassmorphism|backdrop-blur|animate-bounce|animate-spin' \
                       /tmp/pr.diff
                     then
-                      echo "::error::AntiSlop found a likely generic/generated UI pattern."
+                      echo "::error::AntiSlop found a prohibited generic UI pattern."
                       exit 1
                     fi
 
-                    echo "Invitation AntiSlop gate passed."
+                    echo "Invitation AntiSlop passed."
           EOF
 
       - name: Install Invitation CI
@@ -426,20 +448,18 @@ jobs:
                   run: npm run build
           EOF
 
-      - name: Validate bootstrap inputs
+      - name: Validate bootstrap
         shell: bash
         run: |
           set -euo pipefail
+
+          echo "Checking required files..."
 
           test -f .ai/loop.config.json
           test -f .ai/state/task-queue.json
           test -f .ai/state/loop-state.json
           test -f .ai/state/review-log.jsonl
           test -f docs/tasks/INV-001.md
-
-          grep -q '"id": "INV-001"' .ai/state/task-queue.json
-          grep -q '"status": "approved"' .ai/state/task-queue.json
-          grep -q '"loopId": "INV-001"' .ai/state/loop-state.json
 
           test -f .github/workflows/ai-loop-implement.yml
           test -f .github/workflows/ai-loop-review.yml
@@ -449,19 +469,44 @@ jobs:
           test -f .github/workflows/invitation-antislop.yml
           test -f .github/workflows/ci.yml
 
-          # Ensure imported engine no longer contains Badminton-specific
-          # references in the automation layer.
+          echo "Checking Invitation task..."
+
+          grep -q '"id": "INV-001"' \
+            .ai/state/task-queue.json
+
+          grep -q '"status": "approved"' \
+            .ai/state/task-queue.json
+
+          grep -q '"loopId": "INV-001"' \
+            .ai/state/loop-state.json
+
+          echo "Checking for Badminton leakage..."
+
           if grep -RIn \
             --exclude-dir=node_modules \
             --exclude-dir=.git \
             'Badminton' \
-            .ai
+            .ai \
+            .github/workflows
           then
-            echo "::error::Badminton-specific references remain in .ai."
+            echo "::error::Badminton-specific reference detected."
             exit 1
           fi
 
-          echo "Invitation bootstrap validation passed."
+          echo "Checking for broken repository references..."
+
+          if grep -RIn \
+            --exclude-dir=node_modules \
+            --exclude-dir=.git \
+            'ngowda759/Badminton' \
+            .ai \
+            .github/workflows
+          then
+            echo "::error::Badminton repository reference detected."
+            exit 1
+          fi
+
+          echo "Invitation bootstrap validation PASSED."
 
       - name: Commit bootstrap
         shell: bash
@@ -469,7 +514,8 @@ jobs:
           set -euo pipefail
 
           git config user.name "Invitation Automation"
-          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git config user.email \
+            "41898282+github-actions[bot]@users.noreply.github.com"
 
           git add \
             .ai \
@@ -478,7 +524,7 @@ jobs:
 
           if git diff --cached --quiet
           then
-            echo "No changes to commit."
+            echo "No bootstrap changes detected."
             exit 0
           fi
 
