@@ -1,4 +1,4 @@
-name: Bootstrap Invitation AI Loop v6
+name: Bootstrap Invitation AI Loop v7
 
 on:
   workflow_dispatch:
@@ -49,7 +49,6 @@ jobs:
             cp "_badminton-loop-source/.github/workflows/$wf" ".github/workflows/$wf"
           done
 
-          # Adapt imported generic engine references.
           find .ai .github/workflows \
             -type f \
             \( -name '*.mjs' -o -name '*.json' -o -name '*.md' -o -name '*.yml' -o -name '*.yaml' \) \
@@ -71,6 +70,7 @@ jobs:
 
           cat > .ai/loop.config.json <<'JSON'
           {
+            "version": 1,
             "loopId": "INV-001",
             "maxReviewRounds": 3,
             "baseBranch": "main",
@@ -82,7 +82,8 @@ jobs:
               "Invitation AntiSlop"
             ],
             "protectedPaths": [
-              ".github/workflows/",
+              ".github/workflows/ci.yml",
+              ".github/workflows/**",
               ".env",
               ".env.*",
               "docs/constitution.md"
@@ -95,12 +96,18 @@ jobs:
               "optional": [
                 "OPENHANDS_HOST",
                 "OPENROUTER_REVIEW_MODEL"
-              ]
+              ],
+              "note": "GITHUB_TOKEN is provided by GitHub Actions and must never be committed. OPENHANDS_HOST and OPENROUTER_REVIEW_MODEL are Actions variables. OPENROUTER_API_KEY is the reviewer credential; OPENHANDS_API_KEY is the implementer credential."
             },
             "review": {
               "provider": "openrouter",
               "endpoint": "https://openrouter.ai/api/v1",
-              "model": "openrouter/free"
+              "model": "openrouter/free",
+              "apiKeyEnvVar": "OPENROUTER_API_KEY",
+              "modelEnvVar": "OPENROUTER_REVIEW_MODEL",
+              "schema": ".ai/schemas/review-report.schema.json",
+              "markerName": "ai-loop-review",
+              "commentOnEveryRound": true
             },
             "mergeGate": {
               "enabled": true,
@@ -108,44 +115,111 @@ jobs:
               "requireReviewPassed": true,
               "requireHumanApproval": false
             },
+            "reviewers": {
+              "architect": "ChatGPT",
+              "implementer": "OpenHands",
+              "ci": "GitHub Actions",
+              "merge": "GitHub Actions"
+            },
             "automation": {
+              "enabled": true,
               "autoAdvanceTasks": true,
               "autoMerge": true,
               "maxConcurrentTasks": 1,
-              "protectedPathStop": true,
-              "nextTask": {
-                "enabled": true
-              }
+              "nextTaskEnabled": true,
+              "stopOnHumanReviewRequired": true,
+              "stopOnProtectedPath": true,
+              "triggerLabel": "ai-task",
+              "reviewLabel": "ai-review",
+              "blockedLabel": "ai-blocked",
+              "readyLabel": "ai-ready",
+              "nextTaskBranchPrefix": "automation/next-task-",
+              "mergeMethod": "squash",
+              "useNativeAutoMerge": true
             },
-            "statePaths": {
-              "loopState": ".ai/state/loop-state.json",
-              "taskQueue": ".ai/state/task-queue.json",
+            "limits": {
+              "maxChangedFiles": 60,
+              "maxDiffLines": 2500
+            },
+            "paths": {
+              "state": ".ai/state/loop-state.json",
+              "queue": ".ai/state/task-queue.json",
               "reviewLog": ".ai/state/review-log.jsonl",
-              "taskDirectory": "docs/tasks"
+              "taskDocs": "docs/tasks"
             }
           }
           JSON
 
-          cat > .ai/state/review-log.jsonl <<'EOF'
-          EOF
+          : > .ai/state/review-log.jsonl
 
           cat > .ai/state/loop-state.json <<'JSON'
           {
+            "version": 1,
             "loopId": "INV-001",
             "status": "next-task",
-            "currentTaskId": null
+            "round": 0,
+            "maxReviewRounds": 3,
+            "currentTaskId": null,
+            "currentPr": null,
+            "lastVerdict": null,
+            "lastCiStatus": null,
+            "reviewedHeadSha": null,
+            "blockedReason": null,
+            "completedTasks": [],
+            "updatedAt": "2026-01-01T00:00:00Z",
+            "history": [
+              {
+                "at": "2026-01-01T00:00:00Z",
+                "status": "next-task",
+                "note": "Invitation loop infrastructure bootstrapped; awaiting the first implementation task."
+              }
+            ]
           }
           JSON
 
           cat > .ai/state/task-queue.json <<'JSON'
           {
+            "version": 1,
+            "updatedAt": "2026-01-01T00:00:00Z",
             "tasks": [
               {
                 "id": "INV-001",
+                "title": "Initialize Application Foundation",
                 "phase": "P1 Foundation",
                 "status": "approved",
-                "title": "Initialize Application Foundation",
-                "priority": 1
+                "summary": "Establish the production-ready Next.js application foundation for Invitation without implementing product features yet.",
+                "acceptanceCriteria": [
+                  "Create the Next.js App Router application with TypeScript.",
+                  "Establish the Tailwind CSS and shadcn/ui foundation.",
+                  "Establish clean project structure, linting and formatting.",
+                  "Add Vitest and Playwright foundations.",
+                  "Add a responsive mobile-first base layout.",
+                  "Add metadata and SEO foundation.",
+                  "Add application CI for lint, typecheck, test and build.",
+                  "Do not add database, authentication, Rayaramathaynk runtime APIs, Raya AI, hero animation or complex application state."
+                ],
+                "outOfScope": [
+                  "Hero implementation",
+                  "Opening animation",
+                  "Temple content",
+                  "Database",
+                  "Authentication",
+                  "Rayaramathaynk runtime APIs",
+                  "Raya AI",
+                  "Complex application state"
+                ],
+                "humanApproval": false,
+                "dependsOn": [],
+                "references": [
+                  "docs/constitution.md",
+                  "docs/PRODUCT.md",
+                  "docs/ARCHITECTURE.md",
+                  "docs/DESIGN-SYSTEM.md",
+                  "docs/PHASES.md",
+                  "docs/QUALITY-GATES.md",
+                  "docs/AGENT-CONTRACT.md"
+                ],
+                "createdAt": "2026-01-01T00:00:00Z"
               }
             ]
           }
@@ -165,7 +239,7 @@ jobs:
           - Clean project structure
           - ESLint and formatting
           - Vitest and Playwright foundations
-          - Responsive base layout
+          - Responsive mobile-first base layout
           - Metadata and SEO foundation
           - GitHub CI for lint, typecheck, test and build
 
@@ -182,7 +256,7 @@ jobs:
 
           ## Acceptance
 
-          - Application installs with npm ci
+          - Application installs with `npm ci`
           - Lint passes
           - Typecheck passes
           - Tests pass
@@ -201,20 +275,18 @@ jobs:
 
           if ! grep -Eq '^[[:space:]]*permissions:[[:space:]]*$' .github/workflows/ci.yml; then
             tmp="$(mktemp)"
-            {
-              awk '
-                BEGIN { inserted=0 }
-                /^name:/ && inserted==0 {
-                  print
-                  print ""
-                  print "permissions:"
-                  print "  contents: read"
-                  inserted=1
-                  next
-                }
-                { print }
-              ' .github/workflows/ci.yml
-            } > "$tmp"
+            awk '
+              BEGIN { inserted=0 }
+              /^name:/ && inserted==0 {
+                print
+                print ""
+                print "permissions:"
+                print "  contents: read"
+                inserted=1
+                next
+              }
+              { print }
+            ' .github/workflows/ci.yml > "$tmp"
             mv "$tmp" .github/workflows/ci.yml
           fi
 
@@ -257,7 +329,7 @@ jobs:
                       exit 1
                     fi
 
-                - name: Check obvious slop markers
+                - name: Check obvious placeholder content
                   shell: bash
                   run: |
                     set -euo pipefail
@@ -281,17 +353,10 @@ jobs:
           test -f docs/tasks/INV-001.md
           test -f .github/workflows/invitation-antislop.yml
 
-          node --version
           node .ai/scripts/validate-loop-config.mjs
-
-          # Validate workflow structure. Existing CI is intentionally retained;
-          # v6 only adds the minimum explicit read permission if it was missing.
           node .ai/scripts/validate-workflows.mjs
 
-          # The bootstrap file necessarily contains the temporary source URL.
-          # Validate only generated engine/config/workflows, excluding bootstrap files.
           if grep -RIn --exclude-dir=.git \
-            --exclude='bootstrap-invitation-loop-v*.yml' \
             -E 'ngowda759/Badminton|Badminton' \
             .ai \
             .github/workflows/ai-loop-implement.yml \
@@ -311,8 +376,13 @@ jobs:
 
           if (config.loopId !== 'INV-001') throw new Error('Unexpected loopId');
           if (state.loopId !== 'INV-001') throw new Error('Unexpected state loopId');
-          if (!queue.tasks?.some(t => t.id === 'INV-001')) throw new Error('INV-001 missing');
+          if (state.maxReviewRounds !== config.maxReviewRounds) throw new Error('Review round mismatch');
+          if (queue.tasks.length !== 1 || queue.tasks[0].id !== 'INV-001') throw new Error('Unexpected task queue');
+          if (queue.tasks[0].status !== 'approved') throw new Error('INV-001 must start approved');
           if ('taskIdPrefix' in config) throw new Error('taskIdPrefix must not exist');
+          if (!config.paths || !config.paths.state || !config.paths.queue || !config.paths.reviewLog || !config.paths.taskDocs) {
+            throw new Error('Required config.paths entries are missing');
+          }
           NODE
 
       - name: Commit bootstrap
@@ -327,5 +397,5 @@ jobs:
             exit 0
           fi
 
-          git commit -m "chore: bootstrap Invitation autonomous AI loop v6"
+          git commit -m "chore: bootstrap Invitation autonomous AI loop v7"
           git push origin main
