@@ -92,6 +92,32 @@ for (const task of queue.tasks) {
   if (!existsSync(fromRepo(doc))) fail(`task "${task.id}" has no task document at ${doc}`);
 }
 
+// 6b. Queue/state consistency: the queue must agree with the loop state.
+const currentTask = queue.tasks.find((t) => t.id === state.currentTaskId);
+if (!currentTask) {
+  fail(`currentTaskId "${state.currentTaskId}" is not present in the task queue`);
+} else if (currentTask.status !== state.status) {
+  fail(
+    `queue status "${currentTask.status}" for ${currentTask.id} does not match loop-state status "${state.status}"`,
+  );
+}
+for (const id of state.completedTasks) {
+  const done = queue.tasks.find((t) => t.id === id);
+  if (!done) fail(`completed task "${id}" is not present in the task queue`);
+  else if (!["MERGED", "NEXT_PHASE"].includes(done.status)) {
+    fail(`completed task "${id}" must be recorded as MERGED or NEXT_PHASE, found "${done.status}"`);
+  }
+}
+if (state.lastMerge && !state.completedTasks.includes(state.lastMerge.taskId)) {
+  fail("loop-state.lastMerge.taskId must be a completed task");
+}
+if (state.nextTask?.status === "applied" && state.nextTask.taskId && !ids.includes(state.nextTask.taskId)) {
+  fail(`loop-state.nextTask.taskId "${state.nextTask.taskId}" is not present in the task queue`);
+}
+if (state.nextTask?.status === "requested" && !existsSync(fromRepo(config.architect.request))) {
+  fail("loop-state.nextTask is 'requested' but no architect request file exists");
+}
+
 // 7. Paths must exist.
 for (const [key, p] of Object.entries(config.paths)) {
   if (key === "taskDocs") continue;
@@ -120,6 +146,30 @@ if (!existsSync(fromRepo(config.antislop.script))) {
 if (config.review.provider !== "openrouter") fail("review provider must be openrouter");
 if (!/not.{0,40}ChatGPT|never.{0,40}ChatGPT|machine reviewer/i.test(config.review.note ?? "")) {
   fail("review.note must state the reviewer is a machine reviewer and not ChatGPT");
+}
+
+// 11. The architect authority must be ChatGPT and honest about not being automated.
+if (config.architect.provider !== "chatgpt") fail("architect provider must be chatgpt");
+if (!existsSync(fromRepo(config.architect.prompt))) {
+  fail(`architect prompt missing: ${config.architect.prompt}`);
+}
+if (!/human-directed|not an automated endpoint/i.test(config.architect.note ?? "")) {
+  fail("architect.note must state that ChatGPT is a human-directed authority, not an automated endpoint");
+}
+
+// 12. Post-merge reconciliation must be wired: scripts present and a workflow triggers after merge.
+for (const script of [".ai/scripts/reconcile.mjs", ".ai/scripts/next-task.mjs"]) {
+  if (!existsSync(fromRepo(script))) fail(`reconciliation script missing: ${script}`);
+}
+const reconcileWorkflow = ".github/workflows/invitation-reconcile.yml";
+if (!existsSync(fromRepo(reconcileWorkflow))) {
+  fail(`post-merge reconciliation workflow missing: ${reconcileWorkflow}`);
+} else {
+  const wf = readText(reconcileWorkflow);
+  if (!/pull_request/.test(wf) || !/closed/.test(wf)) {
+    fail("reconciliation workflow must trigger on pull_request closed");
+  }
+  if (!/reconcile\.mjs/.test(wf)) fail("reconciliation workflow must invoke .ai/scripts/reconcile.mjs");
 }
 
 notes.push(`states: ${machineStates.length}`);

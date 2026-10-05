@@ -76,6 +76,12 @@ describe("loop configuration", () => {
     expect(serialized).not.toMatch(/gh[pousr]_[A-Za-z0-9]{20,}/);
     expect(serialized).not.toMatch(/sk-[A-Za-z0-9]{20,}/);
   });
+
+  it("names ChatGPT as the architecture authority, honestly marked non-automated", () => {
+    expect(config.architect.provider).toBe("chatgpt");
+    expect(config.architect.note).toMatch(/human-directed|not an automated endpoint/i);
+    expect(config.architect.prompt).toMatch(/^\.ai\/prompts\//);
+  });
 });
 
 describe("state machine", () => {

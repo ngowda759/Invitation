@@ -1,0 +1,85 @@
+name: Invitation Post-Merge Reconciliation
+
+# Runs when a pull request against main is closed, and on demand. The job body
+# only executes for a merged PR (or a manual dispatch), so closing a PR without
+# merging never mutates loop state.
+
+on:
+  pull_request:
+    types: [closed]
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      pr_number:
+        description: Pull request number to reconcile (defaults to the latest merged AI PR)
+        required: false
+        type: string
+
+# Least privilege: reading the PR/merge evidence needs read access, and persisting
+# the reconciled loop state to main needs contents: write. No other write scope is
+# requested — in particular, workflow-file write is NOT requested.
+permissions:
+  contents: write
+  pull-requests: read
+
+concurrency:
+  group: reconcile-${{ github.event.pull_request.number || inputs.pr_number || github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  reconcile:
+    name: Reconcile merged task
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout main
+        uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.repository.default_branch }}
+          # Prefer a write-capable automation token when configured; otherwise fall
+          # back to the default GITHUB_TOKEN. A read-only token will fail at the
+          # push step (see docs/implementation/POST-MERGE-RECONCILIATION.md).
+          token: ${{ secrets.INVITATION_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # Reconciliation scripts are dependency-free Node ESM: no install required.
+      #
+      # On a merged-PR event the script discovers the current task's merged PR
+      # itself, so the loop reconciles the right task regardless of which PR fired
+      # the event. A manual dispatch may name an explicit PR for replay.
+      - name: Reconcile merged task
+        env:
+          GITHUB_TOKEN: ${{ secrets.INVITATION_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          PR="${{ github.event.pull_request.number || inputs.pr_number }}"
+          if [[ -n "$PR" ]]; then
+            node .ai/scripts/reconcile.mjs --pr "$PR" --json
+          else
+            node .ai/scripts/reconcile.mjs --json
+          fi
+
+      - name: Validate loop state
+        run: node .ai/scripts/validate-loop-config.mjs
+
+      - name: Persist reconciled state
+        env:
+          GITHUB_TOKEN: ${{ secrets.INVITATION_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          git config user.name "invitation-loop"
+          git config user.email "invitation-loop@users.noreply.github.com"
+          git add -A -- .ai/state
+          if git diff --cached --quiet; then
+            echo "No state change to persist."
+            exit 0
+          fi
+          git commit -m "chore(loop): reconcile merged task and request next task"
+          git push

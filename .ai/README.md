@@ -51,6 +51,8 @@ Rules enforced by `.ai/scripts/lib/loop-state.mjs`:
 | `antislop.mjs` | Blocking AntiSlop gate; emits machine-readable JSON |
 | `loop-state.mjs` | Inspect / advance loop state (never skips a state) |
 | `dispatch-openhands.mjs` | Configuration-driven OpenHands conversation dispatch |
+| `reconcile.mjs` | Verify a merged task against GitHub and replay the legal path to `NEXT_PHASE` |
+| `next-task.mjs` | Inspect / apply the next task returned by the architecture authority |
 
 Run everything locally with:
 

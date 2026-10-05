@@ -16,6 +16,8 @@
     "lastVerdict",
     "lastCiStatus",
     "blockedReason",
+    "lastMerge",
+    "nextTask",
     "completedTasks",
     "history"
   ],
@@ -48,6 +50,33 @@
     "lastVerdict": { "type": ["string", "null"], "enum": ["PASS", "FAIL", null] },
     "lastCiStatus": { "type": ["string", "null"] },
     "blockedReason": { "type": ["string", "null"] },
+    "lastMerge": {
+      "type": ["object", "null"],
+      "description": "Verified merge evidence for the most recently reconciled task.",
+      "additionalProperties": false,
+      "required": ["taskId", "prNumber", "headSha", "mergeCommit", "mergedAt", "reconciledAt"],
+      "properties": {
+        "taskId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$" },
+        "prNumber": { "type": "integer", "minimum": 1 },
+        "headSha": { "type": "string", "minLength": 1 },
+        "mergeCommit": { "type": "string", "minLength": 1 },
+        "mergedAt": { "type": "string", "format": "date-time" },
+        "reconciledAt": { "type": "string", "format": "date-time" },
+        "ciStatus": { "type": "string" }
+      }
+    },
+    "nextTask": {
+      "type": ["object", "null"],
+      "description": "State of next-task generation after a merge: requested, applied or failed.",
+      "additionalProperties": false,
+      "required": ["status"],
+      "properties": {
+        "status": { "enum": ["requested", "applied", "failed"] },
+        "taskId": { "type": ["string", "null"], "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$" },
+        "requestedAt": { "type": ["string", "null"] },
+        "reason": { "type": ["string", "null"] }
+      }
+    },
     "completedTasks": {
       "type": "array",
       "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$" }
