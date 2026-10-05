@@ -1,0 +1,22 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-05T00:00:00Z",
+  "status": "PLANNED",
+  "currentTaskId": "INV-001",
+  "round": 0,
+  "maxReviewRounds": 3,
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
+  "blockedReason": null,
+  "completedTasks": [],
+  "history": [
+    {
+      "at": "2026-10-05T00:00:00Z",
+      "from": null,
+      "to": "PLANNED",
+      "note": "Invitation-native loop initialised. INV-001 is the first and only task."
+    }
+  ]
+}

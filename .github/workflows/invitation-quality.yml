@@ -2,104 +2,118 @@ name: Invitation Quality Gate
 
 on:
   pull_request:
-    branches:
-      - main
-
+    branches: [main]
   workflow_dispatch:
 
 permissions:
   contents: read
 
+concurrency:
+  group: quality-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
-  constitution:
-    name: Constitution Check
+  structure:
+    name: Repository structure
     runs-on: ubuntu-latest
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Verify project constitution
+      - name: Verify required files
         shell: bash
         run: |
           set -euo pipefail
-
-          required_files=(
-            "README.md"
-            "docs/PRODUCT.md"
-            "docs/ARCHITECTURE.md"
-            "docs/DESIGN-SYSTEM.md"
-            "docs/PHASES.md"
-            "docs/QUALITY-GATES.md"
-            "docs/AGENT-CONTRACT.md"
+          required=(
+            "package.json"
+            "tsconfig.json"
+            "next.config.ts"
+            "src/app/layout.tsx"
+            "src/app/page.tsx"
+            ".github/workflows/ci.yml"
+            ".ai/loop.config.json"
+            ".ai/tasks/INV-001.md"
           )
-
-          for file in "${required_files[@]}"; do
-            test -f "$file" || {
-              echo "::error::Missing required project file: $file"
-              exit 1
-            }
+          missing=0
+          for f in "${required[@]}"; do
+            if [[ ! -f "$f" ]]; then
+              echo "::error::Missing required file: $f"
+              missing=1
+            fi
           done
-
-          grep -q "Rayaramathaynk" README.md
-          grep -q "must not" README.md
-
-          echo "Constitution check passed."
-
-  automation-contract:
-    name: Automation Contract Check
-    runs-on: ubuntu-latest
-    needs: constitution
-
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Verify automation contract
-        shell: bash
-        run: |
-          set -euo pipefail
-
-          test -f ".github/workflows/bootstrap-invitation-loop-v2.yml"
-
-          echo "Bootstrap workflow present."
-
-          if test -f ".ai/loop.config.json"; then
-            echo "AI loop configuration present."
-          else
-            echo "Bootstrap phase: .ai/loop.config.json not present yet."
-          fi
-
-          if test -f ".ai/state/loop-state.json"; then
-            echo "Loop state present."
-          else
-            echo "Bootstrap phase: loop state not present yet."
-          fi
-
-          echo "Automation contract check passed."
+          [[ "$missing" -eq 0 ]]
+          echo "Structure OK."
 
   boundary:
-    name: Project Boundary Check
+    name: Project boundary
     runs-on: ubuntu-latest
-    needs: constitution
-
     steps:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Verify project isolation
+      # Scoped checks. These inspect runtime artefacts (dependency manifests,
+      # source imports, workflow commands) only, so prose in docs/README does
+      # not produce false positives.
+      - name: Reject forbidden runtime dependencies
         shell: bash
         run: |
           set -euo pipefail
 
-          if grep -RIn \
-            --exclude-dir=.git \
-            --exclude='*.lock' \
-            'ngowda759/Rayaramathaynk' \
-            .github .ai docs README.md 2>/dev/null
-          then
-            echo "::error::Invitation must not directly depend on Rayaramathaynk repository runtime."
+          # 1. Dependency manifests must not declare a forbidden package.
+          if grep -rEIn --include='package.json' \
+            --exclude-dir=node_modules --exclude-dir=.next \
+            '"(badminton|@ngowda759/badminton|rayaramathaynk|@ngowda759/rayaramathaynk|raya-ai|@ngowda759/raya-ai)"[[:space:]]*:' \
+            .; then
+            echo "::error::Forbidden runtime dependency declared in a package manifest."
             exit 1
           fi
 
-          echo "Project boundary check passed."
+          # 2. Source imports must not reference a forbidden package or repo.
+          if grep -REIn --include='*.ts' --include='*.tsx' --include='*.mts' --include='*.js' --include='*.mjs' \
+            --exclude-dir=node_modules --exclude-dir=.next \
+            '(from|require\(|import\()[[:space:]]*["'\''][^"'\'']*(badminton|rayaramathaynk|raya-ai)' \
+            src .ai 2>/dev/null; then
+            echo "::error::Forbidden runtime import detected."
+            exit 1
+          fi
+
+          # 3. Workflows must not clone a forbidden repository at runtime.
+          if grep -REIn --include='*.yml' --include='*.yaml' \
+            'git[[:space:]]+clone[^\n]*(badminton|rayaramathaynk)' \
+            .github/workflows 2>/dev/null; then
+            echo "::error::A workflow clones a forbidden repository."
+            exit 1
+          fi
+
+          echo "Boundary OK: no forbidden runtime dependency."
+
+  ci-contract:
+    name: CI contract
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Verify CI is read-only and runs the required steps
+        shell: bash
+        run: |
+          set -euo pipefail
+          ci=".github/workflows/ci.yml"
+
+          grep -Eq '^permissions:' "$ci"
+          grep -Eq '^[[:space:]]+contents:[[:space:]]*read' "$ci"
+
+          for step in 'npm ci' 'npm run lint' 'npm run typecheck' 'npm test' 'npm run build'; do
+            if ! grep -Fq "$step" "$ci"; then
+              echo "::error::CI is missing required step: $step"
+              exit 1
+            fi
+          done
+
+          # CI must not depend on secrets or external agent services.
+          if grep -Eq '\$\{\{[[:space:]]*secrets\.' "$ci"; then
+            echo "::error::CI must not reference repository secrets."
+            exit 1
+          fi
+
+          echo "CI contract OK."

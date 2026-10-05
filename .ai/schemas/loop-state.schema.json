@@ -1,0 +1,85 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://invitation.local/schemas/loop-state.schema.json",
+  "title": "Invitation loop state",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "updatedAt",
+    "status",
+    "currentTaskId",
+    "round",
+    "maxReviewRounds",
+    "currentPr",
+    "reviewedHeadSha",
+    "lastVerdict",
+    "lastCiStatus",
+    "blockedReason",
+    "completedTasks",
+    "history"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "updatedAt": { "type": "string", "format": "date-time" },
+    "status": {
+      "enum": [
+        "PLANNED",
+        "READY",
+        "IMPLEMENTING",
+        "TESTING",
+        "ANTISLOP_REVIEW",
+        "CHATGPT_REVIEW",
+        "FIX_REQUIRED",
+        "REVALIDATING",
+        "APPROVED",
+        "MERGED",
+        "NEXT_PHASE"
+      ]
+    },
+    "currentTaskId": {
+      "type": ["string", "null"],
+      "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$"
+    },
+    "round": { "type": "integer", "minimum": 0 },
+    "maxReviewRounds": { "type": "integer", "minimum": 1 },
+    "currentPr": { "type": ["integer", "null"], "minimum": 1 },
+    "reviewedHeadSha": { "type": ["string", "null"] },
+    "lastVerdict": { "type": ["string", "null"], "enum": ["PASS", "FAIL", null] },
+    "lastCiStatus": { "type": ["string", "null"] },
+    "blockedReason": { "type": ["string", "null"] },
+    "completedTasks": {
+      "type": "array",
+      "items": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$" }
+    },
+    "history": {
+      "type": "array",
+      "minItems": 1,
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["at", "from", "to", "note"],
+        "properties": {
+          "at": { "type": "string", "format": "date-time" },
+          "from": { "type": ["string", "null"] },
+          "to": {
+            "enum": [
+              "PLANNED",
+              "READY",
+              "IMPLEMENTING",
+              "TESTING",
+              "ANTISLOP_REVIEW",
+              "CHATGPT_REVIEW",
+              "FIX_REQUIRED",
+              "REVALIDATING",
+              "APPROVED",
+              "MERGED",
+              "NEXT_PHASE"
+            ]
+          },
+          "note": { "type": "string" }
+        }
+      }
+    }
+  }
+}

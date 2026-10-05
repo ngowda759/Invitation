@@ -1,0 +1,34 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-05T00:00:00Z",
+  "tasks": [
+    {
+      "id": "INV-001",
+      "title": "Initialize Application Foundation",
+      "phase": "P1 Foundation",
+      "status": "PLANNED",
+      "summary": "Establish the production-ready Next.js application foundation for Invitation without implementing product features.",
+      "acceptanceCriteria": [
+        "Next.js App Router with TypeScript",
+        "Tailwind CSS foundation",
+        "shadcn/ui foundation",
+        "ESLint",
+        "Vitest",
+        "Playwright",
+        "Responsive mobile-first base layout",
+        "Metadata and SEO foundation",
+        "CI that runs npm ci, lint, typecheck, test and build with read-only permissions"
+      ],
+      "outOfScope": [
+        "Database",
+        "Authentication",
+        "Raya AI",
+        "Rayaramathaynk runtime APIs",
+        "Hero animation",
+        "Fabricated temple facts"
+      ],
+      "dependsOn": [],
+      "createdAt": "2026-10-05T00:00:00Z"
+    }
+  ]
+}
