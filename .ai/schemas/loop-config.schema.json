@@ -1,0 +1,150 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://invitation.local/schemas/loop-config.schema.json",
+  "title": "Invitation loop configuration",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "version",
+    "project",
+    "baseBranch",
+    "branchPrefix",
+    "ci",
+    "paths",
+    "review",
+    "antislop",
+    "openhands",
+    "stateMachine",
+    "secrets",
+    "limits"
+  ],
+  "properties": {
+    "version": { "const": 1 },
+    "project": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "taskIdPrefix", "firstTaskId"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "taskIdPrefix": {
+          "type": "string",
+          "pattern": "^[A-Z][A-Z0-9]*-$",
+          "description": "Prefix used for task identifiers, e.g. INV-."
+        },
+        "firstTaskId": { "type": "string", "pattern": "^[A-Z][A-Z0-9]*-[0-9]{3}$" }
+      }
+    },
+    "baseBranch": { "type": "string", "minLength": 1 },
+    "branchPrefix": { "type": "string", "minLength": 1 },
+    "ci": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workflowName", "workflowFile", "requiredSteps"],
+      "properties": {
+        "workflowName": { "type": "string", "minLength": 1 },
+        "workflowFile": { "type": "string", "pattern": "^\\.github/workflows/.+\\.ya?ml$" },
+        "requiredSteps": {
+          "type": "array",
+          "minItems": 1,
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "paths": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["state", "queue", "reviewLog", "taskDocs"],
+      "properties": {
+        "state": { "type": "string", "minLength": 1 },
+        "queue": { "type": "string", "minLength": 1 },
+        "reviewLog": { "type": "string", "minLength": 1 },
+        "taskDocs": { "type": "string", "minLength": 1 }
+      }
+    },
+    "review": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "endpoint", "model", "apiKeyEnvVar", "modelEnvVar", "schema", "markerName"],
+      "properties": {
+        "provider": { "const": "openrouter" },
+        "endpoint": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "model": { "type": "string", "minLength": 1 },
+        "apiKeyEnvVar": { "type": "string", "minLength": 1 },
+        "modelEnvVar": { "type": "string", "minLength": 1 },
+        "schema": { "type": "string", "pattern": "^\\.ai/schemas/.+\\.json$" },
+        "markerName": { "type": "string", "minLength": 1 },
+        "note": {
+          "type": "string",
+          "description": "Must state that this reviewer is a machine reviewer and is not ChatGPT."
+        }
+      }
+    },
+    "antislop": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["workflowFile", "script", "blocking"],
+      "properties": {
+        "workflowFile": { "type": "string", "pattern": "^\\.github/workflows/.+\\.ya?ml$" },
+        "script": { "type": "string", "pattern": "^\\.ai/scripts/.+" },
+        "blocking": { "const": true }
+      }
+    },
+    "openhands": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["enabled", "apiKeyEnvVar", "hostEnvVar", "hostDefault", "conversationEndpoint"],
+      "properties": {
+        "enabled": { "type": "boolean" },
+        "apiKeyEnvVar": { "type": "string", "minLength": 1 },
+        "hostEnvVar": { "type": "string", "minLength": 1 },
+        "hostDefault": { "type": "string", "format": "uri", "pattern": "^https://" },
+        "conversationEndpoint": { "type": "string", "pattern": "^/" },
+        "repos": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1 }
+        }
+      }
+    },
+    "stateMachine": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["states", "transitions"],
+      "properties": {
+        "states": {
+          "type": "array",
+          "minItems": 2,
+          "uniqueItems": true,
+          "items": { "type": "string", "pattern": "^[A-Z][A-Z_]*$" }
+        },
+        "transitions": {
+          "type": "object",
+          "description": "Map of state -> list of allowed next states.",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "array",
+            "items": { "type": "string", "pattern": "^[A-Z][A-Z_]*$" }
+          }
+        }
+      }
+    },
+    "secrets": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["required", "optional"],
+      "properties": {
+        "required": { "type": "array", "items": { "type": "string" } },
+        "optional": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "limits": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["maxChangedFiles", "maxDiffLines", "maxReviewRounds"],
+      "properties": {
+        "maxChangedFiles": { "type": "integer", "minimum": 1 },
+        "maxDiffLines": { "type": "integer", "minimum": 1 },
+        "maxReviewRounds": { "type": "integer", "minimum": 1 }
+      }
+    }
+  }
+}

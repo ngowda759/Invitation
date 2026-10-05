@@ -1,0 +1,71 @@
+@import "tailwindcss";
+
+/*
+ * Rayara Anubhava design tokens.
+ * Palette values are the approved project palette (docs/DESIGN-SYSTEM.md).
+ * Gold is an accent, not a large surface colour.
+ */
+:root {
+  --background: #fff8e8;
+  --foreground: #2d211b;
+
+  --maroon-deep: #5a0714;
+  --maroon: #7a0b1c;
+  --gold: #c99a32;
+  --gold-light: #e6c66a;
+  --cream: #fff8e8;
+  --paper: #f5ead2;
+  --brown-deep: #26170f;
+  --text-dark: #2d211b;
+
+  --radius: 0.75rem;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+
+  --color-maroon-deep: var(--maroon-deep);
+  --color-maroon: var(--maroon);
+  --color-gold: var(--gold);
+  --color-gold-light: var(--gold-light);
+  --color-cream: var(--cream);
+  --color-paper: var(--paper);
+  --color-brown-deep: var(--brown-deep);
+  --color-text-dark: var(--text-dark);
+
+  --font-display: var(--font-display), Georgia, "Times New Roman", serif;
+  --font-sans: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --radius-card: var(--radius);
+}
+
+@layer base {
+  html {
+    -webkit-text-size-adjust: 100%;
+    text-size-adjust: 100%;
+  }
+
+  body {
+    background-color: var(--background);
+    color: var(--foreground);
+    font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+    text-rendering: optimizeLegibility;
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--gold);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

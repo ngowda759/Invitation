@@ -1,0 +1,81 @@
+{
+  "version": 1,
+  "project": {
+    "name": "Invitation",
+    "taskIdPrefix": "INV-",
+    "firstTaskId": "INV-001"
+  },
+  "baseBranch": "main",
+  "branchPrefix": "automation/",
+  "ci": {
+    "workflowName": "CI",
+    "workflowFile": ".github/workflows/ci.yml",
+    "requiredSteps": ["npm ci", "npm run lint", "npm run typecheck", "npm test", "npm run build"]
+  },
+  "paths": {
+    "state": ".ai/state/loop-state.json",
+    "queue": ".ai/state/task-queue.json",
+    "reviewLog": ".ai/state/review-log.jsonl",
+    "taskDocs": ".ai/tasks"
+  },
+  "review": {
+    "provider": "openrouter",
+    "endpoint": "https://openrouter.ai/api/v1",
+    "model": "openrouter/free",
+    "apiKeyEnvVar": "OPENROUTER_API_KEY",
+    "modelEnvVar": "OPENROUTER_REVIEW_MODEL",
+    "schema": ".ai/schemas/review-report.schema.json",
+    "markerName": "invitation-machine-review",
+    "note": "This reviewer is an automated OpenRouter model. It is a machine reviewer only and its output is never a ChatGPT review."
+  },
+  "antislop": {
+    "workflowFile": ".github/workflows/invitation-antislop.yml",
+    "script": ".ai/scripts/antislop.mjs",
+    "blocking": true
+  },
+  "openhands": {
+    "enabled": true,
+    "apiKeyEnvVar": "OPENHANDS_API_KEY",
+    "hostEnvVar": "OPENHANDS_HOST",
+    "hostDefault": "https://app.all-hands.dev",
+    "conversationEndpoint": "/api/conversations",
+    "repos": ["ngowda759/Invitation"]
+  },
+  "stateMachine": {
+    "states": [
+      "PLANNED",
+      "READY",
+      "IMPLEMENTING",
+      "TESTING",
+      "ANTISLOP_REVIEW",
+      "CHATGPT_REVIEW",
+      "FIX_REQUIRED",
+      "REVALIDATING",
+      "APPROVED",
+      "MERGED",
+      "NEXT_PHASE"
+    ],
+    "transitions": {
+      "PLANNED": ["READY"],
+      "READY": ["IMPLEMENTING"],
+      "IMPLEMENTING": ["TESTING"],
+      "TESTING": ["ANTISLOP_REVIEW", "FIX_REQUIRED"],
+      "ANTISLOP_REVIEW": ["CHATGPT_REVIEW", "FIX_REQUIRED"],
+      "CHATGPT_REVIEW": ["APPROVED", "FIX_REQUIRED"],
+      "FIX_REQUIRED": ["REVALIDATING"],
+      "REVALIDATING": ["ANTISLOP_REVIEW", "FIX_REQUIRED"],
+      "APPROVED": ["MERGED"],
+      "MERGED": ["NEXT_PHASE"],
+      "NEXT_PHASE": ["PLANNED", "READY"]
+    }
+  },
+  "secrets": {
+    "required": ["OPENHANDS_API_KEY", "OPENROUTER_API_KEY"],
+    "optional": ["OPENHANDS_HOST", "OPENROUTER_REVIEW_MODEL"]
+  },
+  "limits": {
+    "maxChangedFiles": 80,
+    "maxDiffLines": 3000,
+    "maxReviewRounds": 3
+  }
+}

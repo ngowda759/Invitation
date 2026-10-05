@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://invitation.local/schemas/review-report.schema.json",
+  "title": "Machine review report (OpenRouter)",
+  "description": "Machine review only. This report is produced by an OpenRouter model and is never a ChatGPT review.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": ["version", "reviewer", "isChatGpt", "verdict", "summary", "findings"],
+  "properties": {
+    "version": { "const": 1 },
+    "reviewer": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["provider", "model"],
+      "properties": {
+        "provider": { "const": "openrouter" },
+        "model": { "type": "string", "minLength": 1 }
+      }
+    },
+    "isChatGpt": {
+      "const": false,
+      "description": "Always false. Guards against misrepresenting a machine review as a ChatGPT review."
+    },
+    "verdict": { "enum": ["PASS", "FAIL"] },
+    "summary": { "type": "string", "minLength": 1 },
+    "findings": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["severity", "area", "message"],
+        "properties": {
+          "severity": { "enum": ["blocker", "major", "minor"] },
+          "area": { "type": "string", "minLength": 1 },
+          "file": { "type": ["string", "null"] },
+          "message": { "type": "string", "minLength": 1 }
+        }
+      }
+    }
+  }
+}

@@ -1,0 +1,38 @@
+name: Invitation AntiSlop
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: antislop-${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  antislop:
+    name: AntiSlop quality gate
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+
+      # The gate script is dependency-free Node ESM, so no install is required.
+      - name: Run AntiSlop gate
+        run: node .ai/scripts/antislop.mjs
+
+      - name: Upload AntiSlop report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: antislop-report
+          path: .ai/state/antislop-report.json
+          if-no-files-found: warn
