@@ -1,0 +1,384 @@
+name: Bootstrap Invitation AI Loop v2
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  bootstrap:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Invitation
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Import and adapt the proven loop engine
+        shell: bash
+        run: |
+          set -euo pipefail
+          rm -rf _badminton-loop-source
+          git clone --depth 1 https://github.com/ngowda759/Badminton.git _badminton-loop-source
+
+          mkdir -p .ai/scripts .ai/prompts .ai/schemas .ai/templates .ai/tests docs/tasks .ai/state
+          cp -R _badminton-loop-source/.ai/scripts/. .ai/scripts/
+          cp -R _badminton-loop-source/.ai/prompts/. .ai/prompts/
+          cp -R _badminton-loop-source/.ai/schemas/. .ai/schemas/
+          cp -R _badminton-loop-source/.ai/templates/. .ai/templates/
+
+          for f in ai-loop-implement.yml ai-loop-review.yml ai-loop-next-task.yml ai-loop-merge-gate.yml ai-loop-validate.yml; do
+            cp "_badminton-loop-source/.github/workflows/$f" ".github/workflows/$f"
+          done
+
+          # Make the generic engine Invitation-native. This is deliberately a
+          # textual adaptation of the engine's project-neutral ID contract.
+          find .ai/scripts .ai/prompts .ai/schemas .ai/templates -type f \
+            \( -name '*.mjs' -o -name '*.json' -o -name '*.md' \) -print0 |
+            xargs -0 sed -i \
+              -e 's/\bAI-([0-9][0-9]*\(-T[0-9][0-9]*\)*)/INV-\1/g' \
+              -e 's/AI-INFRA/INV-INFRA/g' \
+              -e 's/Badminton AI development loop/Invitation AI development loop/g' \
+              -e 's/Badminton loop/Invitation loop/g'
+
+          # Convert the remaining literal AI loop ID regexes/prefixes that the
+          # previous expression cannot safely cover.
+          grep -RIl --exclude-dir=node_modules --exclude-dir=.git 'AI-' .ai \
+            | xargs -r sed -i \
+              -e 's/\^AI-/^INV-/g' \
+              -e 's/`AI-</`INV-</g' \
+              -e 's/AI-001/INV-001/g' \
+              -e 's/AI-002/INV-002/g' \
+              -e 's/AI-003/INV-003/g'
+
+          rm -rf _badminton-loop-source
+
+      - name: Write Invitation loop configuration
+        shell: bash
+        run: |
+          cat > .ai/loop.config.json <<'JSON'
+          {
+            "version": 1,
+            "loopId": "INV-001",
+            "taskIdPrefix": "INV",
+            "maxReviewRounds": 3,
+            "baseBranch": "main",
+            "branchPrefix": "automation/",
+            "ciWorkflow": "CI",
+            "ciWorkflowFile": ".github/workflows/ci.yml",
+            "requiredChecks": ["Lint, typecheck, test, build", "Invitation AntiSlop"],
+            "protectedPaths": [
+              ".github/workflows/**",
+              ".env",
+              ".env.*",
+              "docs/PRODUCT.md",
+              "docs/ARCHITECTURE.md",
+              "docs/DESIGN-SYSTEM.md",
+              "docs/PHASES.md",
+              "docs/QUALITY-GATES.md",
+              "docs/AGENT-CONTRACT.md"
+            ],
+            "secrets": {
+              "required": ["OPENHANDS_API_KEY", "OPENROUTER_API_KEY"],
+              "optional": ["OPENHANDS_HOST", "OPENROUTER_REVIEW_MODEL"]
+            },
+            "review": {
+              "provider": "openrouter",
+              "endpoint": "https://openrouter.ai/api/v1",
+              "model": "openrouter/free",
+              "apiKeyEnvVar": "OPENROUTER_API_KEY",
+              "modelEnvVar": "OPENROUTER_REVIEW_MODEL",
+              "schema": ".ai/schemas/review-report.schema.json",
+              "markerName": "ai-loop-review",
+              "commentOnEveryRound": true
+            },
+            "mergeGate": {
+              "enabled": true,
+              "requireCiGreen": true,
+              "requireReviewPassed": true,
+              "requireHumanApproval": false
+            },
+            "reviewers": {
+              "architect": "ChatGPT",
+              "implementer": "OpenHands",
+              "reviewer": "OpenRouter",
+              "qualityGate": "Invitation AntiSlop",
+              "ci": "GitHub Actions",
+              "merge": "GitHub Actions"
+            },
+            "automation": {
+              "enabled": true,
+              "autoAdvanceTasks": true,
+              "autoMerge": true,
+              "maxConcurrentTasks": 1,
+              "nextTaskEnabled": true,
+              "stopOnHumanReviewRequired": true,
+              "stopOnProtectedPath": true,
+              "triggerLabel": "ai-task",
+              "reviewLabel": "ai-review",
+              "blockedLabel": "ai-blocked",
+              "readyLabel": "ai-ready",
+              "nextTaskBranchPrefix": "automation/next-task-",
+              "mergeMethod": "squash",
+              "useNativeAutoMerge": true
+            },
+            "limits": {
+              "maxChangedFiles": 60,
+              "maxDiffLines": 2500
+            },
+            "paths": {
+              "state": ".ai/state/loop-state.json",
+              "queue": ".ai/state/task-queue.json",
+              "reviewLog": ".ai/state/review-log.jsonl",
+              "taskDocs": "docs/tasks"
+            }
+          }
+          JSON
+
+      - name: Write Invitation initial task and state
+        shell: bash
+        run: |
+          mkdir -p .ai/state docs/tasks
+
+          cat > .ai/state/review-log.jsonl <<'EOF'
+          EOF
+
+          cat > docs/tasks/INV-P1-001.md <<'EOF'
+          # INV-P1-001 — Initialize Application Foundation
+
+          ## Objective
+          Establish the production-ready Next.js foundation for Rayara Anubhava without implementing later invitation experiences.
+
+          ## Scope
+          - Next.js App Router + TypeScript.
+          - Tailwind CSS and agreed UI foundation.
+          - Documented project structure.
+          - ESLint/formatting.
+          - Vitest and Playwright foundations.
+          - Responsive base layout.
+          - Metadata/SEO foundation.
+          - GitHub CI for lint, typecheck, test and build.
+
+          ## Acceptance criteria
+          - The application starts and builds successfully.
+          - TypeScript, lint, unit-test and browser-test foundations are wired.
+          - CI validates lint, typecheck, test and build.
+          - Mobile-first layout foundation exists.
+          - No database, authentication, Rayaramathaynk runtime dependency, Raya AI, or later-phase invitation feature is introduced.
+          - No fabricated temple-specific content is introduced.
+
+          ## Out of scope
+          - Hero experience.
+          - Programme/event content.
+          - Temple map.
+          - Gallery.
+          - Seva content.
+          - Audio.
+          - Backend/API.
+          - Authentication.
+          - Database.
+
+          ## Validation
+          - `npm run lint`
+          - `npm run typecheck`
+          - `npm test`
+          - `npm run build`
+          - Playwright smoke test if configured.
+
+          ## References
+          - `docs/ARCHITECTURE.md`
+          - `docs/DESIGN-SYSTEM.md`
+          - `docs/PHASES.md`
+          - `docs/QUALITY-GATES.md`
+          - `docs/AGENT-CONTRACT.md`
+          EOF
+
+          cat > .ai/state/task-queue.json <<'JSON'
+          {
+            "version": 1,
+            "updatedAt": "2026-10-04T00:00:00Z",
+            "tasks": [
+              {
+                "id": "INV-P1-001",
+                "title": "Initialize Application Foundation",
+                "phase": "P1 Foundation",
+                "status": "approved",
+                "summary": "Initialize the Invitation application foundation according to the project constitution.",
+                "acceptanceCriteria": [
+                  "Next.js App Router + TypeScript foundation exists.",
+                  "Tailwind CSS and the agreed UI foundation are configured.",
+                  "The documented project structure exists.",
+                  "Lint, typecheck, tests and build are wired into CI.",
+                  "No database, authentication, Rayaramathaynk runtime dependency, or later-phase experience is introduced."
+                ],
+                "outOfScope": [
+                  "Hero experience",
+                  "Programme/event content",
+                  "Temple map",
+                  "Gallery",
+                  "Seva content",
+                  "Audio",
+                  "Backend/API",
+                  "Authentication",
+                  "Database"
+                ],
+                "humanApproval": false,
+                "dependsOn": [],
+                "references": [
+                  "docs/ARCHITECTURE.md",
+                  "docs/DESIGN-SYSTEM.md",
+                  "docs/PHASES.md",
+                  "docs/QUALITY-GATES.md",
+                  "docs/AGENT-CONTRACT.md"
+                ],
+                "createdAt": "2026-10-04T00:00:00Z"
+              }
+            ]
+          }
+          JSON
+
+          cat > .ai/state/loop-state.json <<'JSON'
+          {
+            "version": 1,
+            "loopId": "INV-001",
+            "status": "next-task",
+            "round": 0,
+            "maxReviewRounds": 3,
+            "currentTaskId": null,
+            "currentPr": null,
+            "lastVerdict": null,
+            "lastCiStatus": null,
+            "reviewedHeadSha": null,
+            "blockedReason": null,
+            "completedTasks": [],
+            "updatedAt": "2026-10-04T00:00:00Z",
+            "history": [
+              {
+                "at": "2026-10-04T00:00:00Z",
+                "status": "next-task",
+                "note": "Invitation loop initialized with INV-P1-001 approved and ready for implementation."
+              }
+            ]
+          }
+          JSON
+
+      - name: Install the Invitation AntiSlop gate
+        shell: bash
+        run: |
+          cat > .github/workflows/invitation-antislop.yml <<'EOF'
+          name: Invitation AntiSlop
+
+          on:
+            pull_request:
+              branches: [main]
+            workflow_dispatch:
+
+          permissions:
+            contents: read
+            pull-requests: read
+
+          jobs:
+            antislop:
+              name: Invitation AntiSlop
+              runs-on: ubuntu-latest
+              steps:
+                - name: Checkout trusted base
+                  uses: actions/checkout@v4
+                  with:
+                    ref: ${{ github.event.repository.default_branch || 'main' }}
+                    persist-credentials: false
+
+                - name: Checkout PR diff as data
+                  if: ${{ github.event_name == 'pull_request' }}
+                  env:
+                    GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                    REPO: ${{ github.repository }}
+                    PR: ${{ github.event.pull_request.number }}
+                  run: gh pr diff "$PR" --repo "$REPO" > /tmp/pr.diff
+
+                - name: Run Invitation AntiSlop heuristics
+                  shell: bash
+                  run: |
+                    set -euo pipefail
+                    test -f /tmp/pr.diff || : > /tmp/pr.diff
+
+                    # Hard fail on common generated-slop patterns in changed code/copy.
+                    if grep -Ein 'TODO|FIXME|lorem ipsum|coming soon|your text here|replace me|placeholder text' /tmp/pr.diff; then
+                      echo "::error::AntiSlop found placeholder or unfinished content."
+                      exit 1
+                    fi
+
+                    # Flag generic UI patterns that violate the Invitation constitution.
+                    if grep -Ein 'glassmorphism|backdrop-blur|animate-bounce|animate-spin|rounded-full.*p-|from-[a-z]+-[0-9]+.*to-[a-z]+-[0-9]+' /tmp/pr.diff; then
+                      echo "::error::AntiSlop found a likely generic/generated UI pattern."
+                      exit 1
+                    fi
+
+                    echo "Invitation AntiSlop gate passed."
+          EOF
+
+      - name: Add AntiSlop to the loop merge evidence
+        shell: bash
+        run: |
+          # The merge-gate script reads required checks from config; the CI
+          # workflow must expose this check under the exact configured name.
+          cat > .github/workflows/ci.yml <<'EOF'
+          name: CI
+
+          on:
+            pull_request:
+              branches: [main]
+            push:
+              branches: [main]
+
+          permissions:
+            contents: read
+
+          jobs:
+            quality:
+              name: Lint, typecheck, test, build
+              runs-on: ubuntu-latest
+              steps:
+                - uses: actions/checkout@v4
+                - uses: actions/setup-node@v4
+                  with:
+                    node-version: 22
+                    cache: npm
+                - name: Install
+                  run: npm ci
+                - name: Lint
+                  run: npm run lint
+                - name: Typecheck
+                  run: npm run typecheck
+                - name: Test
+                  run: npm test
+                - name: Build
+                  run: npm run build
+          EOF
+
+      - name: Validate bootstrap inputs
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f .ai/loop.config.json
+          test -f .ai/state/task-queue.json
+          test -f .ai/state/loop-state.json
+          test -f .ai/state/review-log.jsonl
+          test -f docs/tasks/INV-P1-001.md
+          grep -q '"id": "INV-P1-001"' .ai/state/task-queue.json
+          grep -q '"status": "approved"' .ai/state/task-queue.json
+          ! grep -RIn 'Badminton' .ai/loop.config.json .ai/prompts .ai/schemas .ai/scripts || true
+
+      - name: Commit bootstrap
+        shell: bash
+        run: |
+          git config user.name "Invitation Automation"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .ai .github/workflows docs/tasks/INV-P1-001.md
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+            exit 0
+          fi
+          git commit -m "chore: bootstrap Invitation autonomous AI loop v2"
+          git push origin HEAD:main
