@@ -1,0 +1,11 @@
+{
+  "version": 1,
+  "updatedAt": "2026-10-05T12:30:41.133Z",
+  "taskId": "INV-002",
+  "status": "blocked",
+  "sourceState": "READY",
+  "conversationId": null,
+  "startTaskId": null,
+  "dispatchedAt": null,
+  "reason": "OPENHANDS_API_KEY is not set; refusing to fabricate a dispatch."
+}
