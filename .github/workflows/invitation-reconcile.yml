@@ -15,12 +15,14 @@ on:
         required: false
         type: string
 
-# Least privilege: reading the PR/merge evidence needs read access, and persisting
-# the reconciled loop state to main needs contents: write. No other write scope is
-# requested — in particular, workflow-file write is NOT requested.
+# Least privilege: reading the PR/merge evidence needs read access, persisting the
+# reconciled loop state to main needs contents: write, and explicitly triggering the
+# autopilot stage needs actions: write. No other write scope is requested — in
+# particular, workflow-file write is NOT requested.
 permissions:
   contents: write
   pull-requests: read
+  actions: write
 
 concurrency:
   group: reconcile-${{ github.event.pull_request.number || inputs.pr_number || github.ref }}
@@ -83,3 +85,14 @@ jobs:
           fi
           git commit -m "chore(loop): reconcile merged task and request next task"
           git push
+
+      # Continue the loop explicitly. A push made with the default GITHUB_TOKEN does
+      # not trigger further workflows, so dispatch the autopilot stage by hand. The
+      # autopilot steps are idempotent, so this cannot duplicate a task or dispatch.
+      - name: Trigger autopilot
+        env:
+          GH_TOKEN: ${{ secrets.INVITATION_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
+        run: |
+          set -euo pipefail
+          gh workflow run "Invitation Autopilot" --ref "${{ github.event.repository.default_branch }}" \
+            || echo "::warning::Could not trigger the autopilot stage; the push trigger will cover it when available."

@@ -108,9 +108,10 @@ PR #1.
 
 ## Next-task generation
 
-The architecture/product authority is **ChatGPT**, a human-directed authority — not an
-automated endpoint (`architect.provider === "chatgpt"`, enforced by the validator).
-The loop therefore cannot synthesize a task itself.
+The architecture authority is the configured **autonomous worker** (OpenHands); the
+architecture prompt (`.ai/prompts/architect.md`) is its governing specification. The
+loop therefore does not wait for a human to apply a brief: the same request is consumed
+automatically.
 
 After a merge, reconciliation writes a machine-readable request to
 `.ai/state/next-task-request.json`:
@@ -119,7 +120,7 @@ After a merge, reconciliation writes a machine-readable request to
 {
   "version": 1,
   "requestedAt": "…",
-  "authority": { "provider": "chatgpt", "prompt": ".ai/prompts/architect.md", "note": "…" },
+  "authority": { "provider": "openhands", "prompt": ".ai/prompts/architect.md", "note": "…" },
   "afterTaskId": "INV-001",
   "merge": { "prNumber": 1, "mergeCommit": "9cab2155…", … },
   "phase": "Phase 2 — Visual System",
@@ -133,20 +134,25 @@ The **suggested id** is computed from the queue (next sequential number), and th
 **phase** is resolved from `docs/PHASES.md` (the phase that follows the completed
 task's phase). Neither is invented.
 
-When the authority returns a brief, it is applied with:
+When the request is pending, the autonomous worker generates the brief and applies it
+with:
 
 ```bash
-node .ai/scripts/next-task.mjs apply --file <task.json> [--brief <brief.md>]
+node .ai/scripts/next-task.mjs generate
 ```
 
-`applyBrief` validates the brief against `.ai/schemas/task-queue.schema.json`,
-refuses a duplicate id, requires the phase to be the next roadmap phase, writes the
-Markdown brief to `.ai/tasks/<ID>.md`, appends the task to the queue, and moves the
-loop `NEXT_PHASE -> READY` with the new task as the current task.
+`generate` (`.ai/scripts/lib/generate.mjs`) builds the task from repository evidence —
+the phase section in `docs/PHASES.md` supplies the deliverables and gate, and
+`docs/PRODUCT.md` supplies the V1 non-goals as out-of-scope — then calls `applyBrief`,
+which validates the brief against `.ai/schemas/task-queue.schema.json`, refuses a
+duplicate id, requires the phase to be the next roadmap phase, writes the Markdown brief
+to `.ai/tasks/<ID>.md`, appends the task to the queue, and moves the loop
+`NEXT_PHASE -> READY` with the new task as the current task. See
+`docs/implementation/AUTONOMOUS-LOOP.md`.
 
-If the roadmap defines no following phase (or the authority is otherwise
-unavailable), the loop does **not** fabricate a task. It stays at `NEXT_PHASE` with
-`blockedReason` set and `nextTask.status: "failed"` recording why.
+If the roadmap defines no following phase (or the phase in the request is unknown), the
+loop does **not** fabricate a task. It stays at `NEXT_PHASE` with `blockedReason` set and
+`nextTask.status: "failed"` recording why.
 
 ## Idempotency
 
@@ -186,8 +192,12 @@ completion.
 - the job runs only when the PR actually merged (`merged == true`) or on manual
   dispatch, so closing an unmerged PR never mutates state;
 - permissions are least-privilege: `contents: write` (to persist the reconciled state
-  back to `main`) and `pull-requests: read` (to read merge evidence). **Workflow-file
-  write is not requested.**
+  back to `main`), `pull-requests: read` (to read merge evidence) and `actions: write`
+  (to explicitly trigger the autopilot stage). **Workflow-file write is not requested.**
+- after persisting, it triggers the `Invitation Autopilot` workflow explicitly, because
+  a push made with the default `GITHUB_TOKEN` does not fire further workflows. The
+  autopilot steps are idempotent, so the push trigger (when available) and the explicit
+  dispatch cannot both produce a second task or a second conversation.
 
 Because the workflow checks out `main` and writes state, it needs a credential that
 can push to `main` (see the next section).

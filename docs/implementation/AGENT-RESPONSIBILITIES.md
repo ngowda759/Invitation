@@ -3,7 +3,7 @@
 This document defines the responsibilities and boundaries of every agent in the
 Invitation delivery system. It refines `docs/AGENT-CONTRACT.md`.
 
-## ChatGPT — product and final quality authority
+## Architect — product and design authority (governing prompt)
 
 Owns:
 
@@ -14,14 +14,16 @@ Owns:
 - acceptance criteria
 - final quality authority
 
-ChatGPT is a human-directed authority. It is **not** an automated endpoint in this
-repository. Its decisions are recorded in the project constitution (`docs/`) and in
-task briefs.
+The architect prompt (`.ai/prompts/architect.md`) is the **governing specification for
+task generation**. Its safety rules are preserved. The configured autonomous worker
+(OpenHands) consumes the next-task request automatically, so no human prompt is required
+for each task.
 
-## OpenHands — implementation
+## OpenHands — autonomous worker and implementation
 
 Owns:
 
+- generating the next task from the pending request
 - implementation
 - tests
 - fixes

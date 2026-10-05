@@ -13,27 +13,70 @@ credential, an endpoint or a repository name in code.
   "apiKeyEnvVar": "OPENHANDS_API_KEY",
   "hostEnvVar": "OPENHANDS_HOST",
   "hostDefault": "https://app.all-hands.dev",
-  "conversationEndpoint": "/api/conversations",
+  "conversationEndpoint": "/api/v1/app-conversations",
+  "startTaskEndpoint": "/api/v1/app-conversations/start-tasks",
+  "dispatchRecord": ".ai/state/openhands-dispatch.json",
   "repos": ["ngowda759/Invitation"]
 }
 ```
 
+## API contract
+
+The dispatcher uses the **real OpenHands Cloud V1 app-server API**. It issues
+`POST {host}/api/v1/app-conversations` with Bearer auth:
+
+```json
+{
+  "initial_message": {
+    "role": "user",
+    "content": [{ "type": "text", "text": "<worker prompt>" }],
+    "run": true
+  },
+  "selected_repository": "ngowda759/Invitation",
+  "selected_branch": "main",
+  "title": "Invitation INV-002 (READY)"
+}
+```
+
+The response is a start-task; `app_conversation_id` (or `id`) is recorded as the
+conversation id. The prompt is built from the governing prompts (`.ai/prompts/architect.md`,
+`.ai/prompts/implementer.md`), the pending next-task request and the task brief.
+
 ## Dispatch
 
 ```bash
-# Safe locally: reports SKIPPED when the credential is absent.
-node .ai/scripts/dispatch-openhands.mjs --task INV-001
+# Dispatch the current loop task. Safe locally: records a blocked state (exit 1)
+# when the credential is absent, and never fabricates success.
+node .ai/scripts/openhands-dispatch.mjs
 
-# Show the request without sending it.
-node .ai/scripts/dispatch-openhands.mjs --task INV-001 --dry-run
+# Show the request that would be sent without sending it.
+node .ai/scripts/openhands-dispatch.mjs --dry-run
+
+# Machine-readable result.
+node .ai/scripts/openhands-dispatch.mjs --json
 ```
 
 The script:
 
-- reads the credential variable name, host and endpoint from configuration;
-- builds the conversation prompt from `.ai/prompts/implementer.md` plus the task brief;
+- reads the credential variable name, host, endpoint and repository from configuration;
+- resolves what to dispatch from the loop state: a `READY` task, or the `NEXT_PHASE`
+  next-task generation request;
+- is idempotent: a task with a `dispatched` record in
+  `.ai/state/openhands-dispatch.json` is never dispatched again;
 - never prints the credential;
-- exits `0` with `SKIPPED` when the credential is not set, so it is safe in CI without secrets.
+- records `taskId`, `status`, `sourceState`, `conversationId`, `startTaskId`,
+  `dispatchedAt` and any `reason`.
+
+The legacy `.ai/scripts/dispatch-openhands.mjs` remains for a single explicit `--task`
+dispatch.
+
+## Automatic trigger
+
+`.github/workflows/invitation-autopilot.yml` runs generation and dispatch automatically
+when a push to `main` touches `.ai/state/**` or `.ai/tasks/**` (which is what
+reconciliation does when it persists the next-task request), and on manual dispatch.
+Both steps are idempotent, and a run that changes nothing makes no commit, so the
+workflow cannot recurse.
 
 ## Secrets
 

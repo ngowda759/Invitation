@@ -1,12 +1,12 @@
 /**
  * Next-task generation request mechanism.
  *
- * The architecture/product authority is ChatGPT (`architect.provider === "chatgpt"`).
- * It is a *human-directed* authority, not an automated endpoint, so the loop cannot
- * synthesize a task on its own. Instead it writes an explicit, machine-readable
- * request describing the next task and waits for the authority to return a brief.
+ * The architecture authority is the configured autonomous worker
+ * (`architect.provider === "openhands"`). The architect prompt is the governing
+ * specification for task generation; the worker consumes the request automatically, so
+ * no human prompt is required for each task.
  *
- * Nothing here invents a task: when no brief is available the caller records a
+ * Nothing here invents a task: when no request is pending the caller records a
  * waiting/failed state and never fabricates a task id or content.
  */
 import { existsSync } from "node:fs";

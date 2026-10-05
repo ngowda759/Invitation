@@ -8,13 +8,11 @@ configuration-driven and does not import or adapt any other repository's engine.
 ```text
 GitHub (source of truth: code, CI, PRs, merge)
   |
-  +--> OpenHands ---- implementation/tests/fixes/PR ----> PR
+  +--> OpenHands ---- next task + implementation/tests/fixes/PR ----> PR
   |
   +--> AntiSlop ----- objective blocking quality gate --> PASS/FAIL
   |
   +--> OpenRouter --- automated machine review ----------> PASS/FAIL
-  |
-  +--> ChatGPT ------ product/design/final authority ----> APPROVE/FIX
   |
   v
 GitHub CI (lint, typecheck, test, build) ----> merge only after required gates
@@ -24,8 +22,8 @@ GitHub CI (lint, typecheck, test, build) ----> merge only after required gates
 
 | Agent | Responsibility | Boundary |
 | --- | --- | --- |
-| ChatGPT | Architecture, product requirements, design direction, UX, acceptance criteria, final quality authority | Human-directed authority; not an automated endpoint here |
-| OpenHands | Implementation, tests, fixes, PR creation | Must not push to main; must not merge |
+| Architect prompt | Governing specification for task generation: architecture, product requirements, design direction, UX, acceptance criteria | Consumed automatically; the prompt's safety rules are preserved |
+| OpenHands | Autonomous worker: generate the next task from the request, implement it, add tests, fix issues, open the PR | Must not push to main; must not merge |
 | OpenRouter | Automated machine review only | A machine reviewer; never represented as ChatGPT |
 | AntiSlop | Objective quality gate: placeholders, forbidden dependencies, low-quality implementation, scope | Objective checks only; does not rewrite architecture |
 | GitHub | Source of truth: code, CI, PRs, merge | Merge only when required gates pass |
@@ -59,14 +57,18 @@ PLANNED -> READY -> IMPLEMENTING -> TESTING -> ANTISLOP_REVIEW
 A phase cannot advance without evidence for its applicable gates, and no transition
 may skip a state. Every transition is validated and persisted.
 
-## Post-merge reconciliation
+## Post-merge reconciliation and autonomous continuation
 
 A merge is detected, verified against GitHub and reconciled through the legal path to
 `NEXT_PHASE` by `.ai/scripts/reconcile.mjs`
 (`.github/workflows/invitation-reconcile.yml` triggers on `pull_request: closed`).
-The next task is then *requested* from the architecture authority and applied with
-`.ai/scripts/next-task.mjs`. See
-`docs/implementation/POST-MERGE-RECONCILIATION.md`.
+The next task is then generated automatically from the pending request by
+`.ai/scripts/next-task.mjs generate` (`.ai/scripts/lib/generate.mjs`), which moves the
+loop `NEXT_PHASE -> READY`, and the READY task is dispatched to OpenHands by
+`.ai/scripts/openhands-dispatch.mjs` (`.ai/scripts/lib/openhands.mjs`). The
+`Invitation Autopilot` workflow (`.github/workflows/invitation-autopilot.yml`) runs both
+steps automatically. See `docs/implementation/POST-MERGE-RECONCILIATION.md` and
+`docs/implementation/AUTONOMOUS-LOOP.md`.
 
 ## Phase 1
 

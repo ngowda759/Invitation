@@ -149,7 +149,7 @@ describe("successful reconciliation", () => {
     expect(request.suggestedId).toBe("INV-002");
     expect(request.phase).toMatch(/Phase 2/);
     expect(request.afterTaskId).toBe("INV-001");
-    expect(request.authority.provider).toBe("chatgpt");
+    expect(request.authority.provider).toBe("openhands");
   });
 
   it("discovers the merged PR without an explicit --pr when currentPr is null", () => {
