@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-05T08:11:50.540Z",
+  "updatedAt": "2026-10-05T12:30:39.799Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -29,6 +29,36 @@
       ],
       "dependsOn": [],
       "createdAt": "2026-10-05T00:00:00Z"
+    },
+    {
+      "id": "INV-002",
+      "title": "Visual System",
+      "phase": "Phase 2 — Visual System",
+      "status": "READY",
+      "summary": "Deliver Phase 2 — Visual System for the Invitation project: typography, colors, spacing, motion primitives, ornaments, buttons/cards, responsive foundations.",
+      "acceptanceCriteria": [
+        "typography implemented.",
+        "colors implemented.",
+        "spacing implemented.",
+        "motion primitives implemented.",
+        "ornaments implemented.",
+        "buttons/cards implemented.",
+        "responsive foundations implemented.",
+        "Phase gate satisfied: design review."
+      ],
+      "outOfScope": [
+        "No database.",
+        "No authentication.",
+        "No complex admin portal.",
+        "No dependency on Rayaramathaynk runtime APIs.",
+        "No payment processing.",
+        "No real-time backend.",
+        "No uncontrolled third-party widgets."
+      ],
+      "dependsOn": [
+        "INV-001"
+      ],
+      "createdAt": "2026-10-05T12:30:39.797Z"
     }
   ]
 }

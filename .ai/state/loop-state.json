@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-05T08:11:50.544Z",
-  "status": "NEXT_PHASE",
-  "currentTaskId": "INV-001",
+  "updatedAt": "2026-10-05T12:30:39.800Z",
+  "status": "READY",
+  "currentTaskId": "INV-002",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": 1,
-  "reviewedHeadSha": "d1b6b347ae4a015d30e6b2f1a23e878e263ece18",
-  "lastVerdict": "PASS",
-  "lastCiStatus": "success",
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
   "blockedReason": null,
   "lastMerge": {
     "taskId": "INV-001",
@@ -20,7 +20,7 @@
     "ciStatus": "success"
   },
   "nextTask": {
-    "status": "requested",
+    "status": "applied",
     "taskId": "INV-002",
     "requestedAt": "2026-10-05T08:11:50.544Z",
     "reason": null
@@ -88,6 +88,12 @@
       "from": "NEXT_PHASE",
       "to": "NEXT_PHASE",
       "note": "Next task INV-002 requested from the chatgpt authority for phase Phase 2 — Visual System."
+    },
+    {
+      "at": "2026-10-05T12:30:39.800Z",
+      "from": "NEXT_PHASE",
+      "to": "READY",
+      "note": "Next task INV-002 (\"Visual System\") applied from the openhands authority for phase Phase 2 — Visual System."
     }
   ]
 }
