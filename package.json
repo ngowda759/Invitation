@@ -4,7 +4,7 @@
   "private": true,
   "description": "Rayara Anubhava — digital temple invitation",
   "engines": {
-    "node": ">=20.9.0"
+    "node": ">=22.22.2"
   },
   "scripts": {
     "dev": "next dev",

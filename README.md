@@ -21,6 +21,9 @@ repository. Real content is supplied by the product authority.
 
 ## Development
 
+Requires Node.js >= 22.22.2 (see `.nvmrc`). jsdom 30, used by the Vitest
+environment, does not support Node 20.
+
 ```bash
 npm install
 npm run dev
