@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T10:17:02.359Z",
+  "updatedAt": "2026-10-06T10:17:12.910Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -260,6 +260,37 @@
         "INV-008"
       ],
       "createdAt": "2026-10-06T09:45:14.483Z"
+    },
+    {
+      "id": "INV-010",
+      "title": "Release",
+      "phase": "Phase 10 — Release",
+      "status": "READY",
+      "summary": "Deliver Phase 10 — Release for the Invitation project: unit tests, e2e tests, lint, typecheck, build, performance, security, Antislop, final ChatGPT review.",
+      "acceptanceCriteria": [
+        "unit tests implemented.",
+        "e2e tests implemented.",
+        "lint implemented.",
+        "typecheck implemented.",
+        "build implemented.",
+        "performance implemented.",
+        "security implemented.",
+        "Antislop implemented.",
+        "final ChatGPT review implemented."
+      ],
+      "outOfScope": [
+        "No database.",
+        "No authentication.",
+        "No complex admin portal.",
+        "No dependency on Rayaramathaynk runtime APIs.",
+        "No payment processing.",
+        "No real-time backend.",
+        "No uncontrolled third-party widgets."
+      ],
+      "dependsOn": [
+        "INV-009"
+      ],
+      "createdAt": "2026-10-06T10:17:12.903Z"
     }
   ]
 }
