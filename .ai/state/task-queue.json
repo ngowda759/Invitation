@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T07:17:33.788Z",
+  "updatedAt": "2026-10-06T07:43:25.739Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -92,7 +92,7 @@
       "id": "INV-004",
       "title": "Invitation Content",
       "phase": "Phase 4 — Invitation Content",
-      "status": "READY",
+      "status": "NEXT_PHASE",
       "summary": "Deliver Phase 4 — Invitation Content for the Invitation project: Darshan, festival, programme timeline, Guru Rayaru, Seva sections.",
       "acceptanceCriteria": [
         "Darshan implemented.",

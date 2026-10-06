@@ -1,31 +1,31 @@
 {
   "version": 1,
-  "requestedAt": "2026-10-06T07:17:19.537Z",
+  "requestedAt": "2026-10-06T07:43:25.743Z",
   "requestedBy": "invitation-loop",
   "authority": {
     "provider": "openhands",
     "prompt": ".ai/prompts/architect.md",
     "note": "The architecture prompt is the governing specification for task generation. The configured autonomous worker (OpenHands) consumes the next-task request automatically; no human prompt is required for each task."
   },
-  "afterTaskId": "INV-003",
+  "afterTaskId": "INV-004",
   "merge": {
-    "taskId": "INV-003",
-    "prNumber": 5,
-    "headSha": "fea88faf4bfd6d8fcd9dd07c41693b8fe1a20ab9",
-    "mergeCommit": "3eed04471edb84691d4715ba2cf9a5be35384369",
-    "mergedAt": "2026-10-06T07:17:08Z",
-    "reconciledAt": "2026-10-06T07:17:19.533Z",
+    "taskId": "INV-004",
+    "prNumber": 6,
+    "headSha": "423c90c259f8c7a36764c9d53b021a5a7b3576d8",
+    "mergeCommit": "360d6068abc225fe97d3dd1dcdb53f41b357995e",
+    "mergedAt": "2026-10-06T07:43:14Z",
+    "reconciledAt": "2026-10-06T07:43:25.739Z",
     "ciStatus": "pending"
   },
-  "phase": "Phase 4 — Invitation Content",
-  "suggestedId": "INV-004",
+  "phase": "Phase 5 — Temple Experience",
+  "suggestedId": "INV-005",
   "dependsOn": [
-    "INV-003"
+    "INV-004"
   ],
   "instructions": [
     "Produce exactly one task brief for the next phase in docs/PHASES.md.",
     "Output a JSON task object satisfying .ai/schemas/task-queue.schema.json.",
-    "Provide the Markdown brief at .ai/tasks/INV-004.md.",
+    "Provide the Markdown brief at .ai/tasks/INV-005.md.",
     "Apply it with: node .ai/scripts/next-task.mjs apply --file <json> [--brief <md>]",
     "Do not invent temple facts, dates, timings, historical or religious claims."
   ]
