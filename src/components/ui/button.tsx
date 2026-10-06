@@ -37,5 +37,17 @@ function Button({ className, variant, size, type = "button", ...props }: ButtonP
   );
 }
 
-export { Button, buttonVariants };
-export type { ButtonProps };
+type ButtonLinkProps = ComponentProps<"a"> & VariantProps<typeof buttonVariants>;
+
+/** An anchor styled as a button, for navigational calls to action. */
+function ButtonLink({
+  className,
+  variant,
+  size,
+  ...props
+}: ButtonLinkProps) {
+  return <a className={cn(buttonVariants({ variant, size }), className)} {...props} />;
+}
+
+export { Button, ButtonLink, buttonVariants };
+export type { ButtonProps, ButtonLinkProps };

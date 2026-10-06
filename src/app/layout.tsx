@@ -1,6 +1,7 @@
 import type { Metadata, Viewport } from "next";
 import { Inter, Lora } from "next/font/google";
 
+import { event } from "@/content/event";
 import { site } from "@/content/site";
 
 import "./globals.css";
@@ -19,18 +20,18 @@ const display = Lora({
 
 export const metadata: Metadata = {
   title: {
-    default: site.projectName,
-    template: `%s · ${site.projectName}`,
+    default: event.name,
+    template: `%s · ${event.name}`,
   },
-  description: site.description,
-  applicationName: site.projectName,
+  description: event.description,
+  applicationName: event.name,
   robots: { index: true, follow: true },
   openGraph: {
     type: "website",
     locale: site.locale,
-    siteName: site.projectName,
-    title: site.projectName,
-    description: site.description,
+    siteName: event.name,
+    title: event.name,
+    description: event.description,
   },
 };
 

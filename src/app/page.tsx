@@ -1,57 +1,31 @@
-import { Button } from "@/components/ui/button";
-import { site } from "@/content/site";
+import { EventIdentity } from "@/components/experience/EventIdentity";
+import { OpeningExperience } from "@/components/experience/OpeningExperience";
+import { ProgrammeNote } from "@/components/experience/ProgrammeNote";
+import { TempleHero } from "@/components/experience/TempleHero";
 
 /**
- * Foundation placeholder page.
+ * Invitation home — Phase 3 (Opening + Hero).
  *
- * This page intentionally contains no hero, no animation and no temple content.
- * It exists so the application foundation can be built, linted, typed, tested and
- * rendered. Product content is added in a later, product-authorised phase.
+ * Composition: an opening threshold, then a temple hero carrying the invocation,
+ * event identity and primary calls to action, followed by a compact event identity
+ * panel and an honest programme boundary note. Later phases add the invitation
+ * content beneath this.
  */
 export default function HomePage() {
   return (
     <>
-      <header className="border-b border-maroon/10">
-        <div className="mx-auto flex w-full max-w-5xl items-center justify-between px-4 py-4 sm:px-6">
-          <p className="font-display text-lg text-maroon">{site.projectName}</p>
-          <span className="text-xs uppercase tracking-widest text-text-dark/60">
-            Foundation
-          </span>
-        </div>
-      </header>
+      <OpeningExperience />
 
-      <main id="main" className="flex flex-1 items-center">
-        <section
-          aria-labelledby="foundation-heading"
-          className="mx-auto w-full max-w-2xl px-4 py-16 text-center sm:px-6 sm:py-24"
-        >
-          <h1
-            id="foundation-heading"
-            className="font-display text-3xl leading-tight text-maroon sm:text-4xl"
-          >
-            {site.projectName}
-          </h1>
-          <p className="mt-4 text-base leading-relaxed text-text-dark/80">
-            {site.description}
-          </p>
-          <p className="mt-2 text-sm text-text-dark/60">
-            The invitation experience is not built yet. This page confirms the
-            application foundation runs.
-          </p>
-
-          <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
-            <Button size="lg">Invitation coming soon</Button>
-            <Button variant="outline" size="lg">
-              Learn more
-            </Button>
-          </div>
-        </section>
+      <main id="main" className="flex flex-1 flex-col">
+        <TempleHero />
+        <EventIdentity />
+        <ProgrammeNote />
       </main>
 
-      <footer className="border-t border-maroon/10">
-        <div className="mx-auto w-full max-w-5xl px-4 py-6 text-center text-xs text-text-dark/60 sm:px-6">
-          {site.projectName}
-        </div>
+      <footer className="border-t border-maroon/10 bg-brown-deep px-5 py-8 sm:px-8">
+        <p className="mx-auto max-w-2xl text-center text-xs text-cream/60">
+          Digital temple invitation experience.
+        </p>
       </footer>
     </>
   );
