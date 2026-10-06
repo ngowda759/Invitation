@@ -38,6 +38,9 @@ export const metadata: Metadata = {
 export const viewport: Viewport = {
   width: "device-width",
   initialScale: 1,
+  // The invitation uses one light palette; state it so the browser does not apply a
+  // dark form-control or scrollbar treatment that would break the design.
+  colorScheme: "light",
   themeColor: "#5a0714",
 };
 
@@ -49,7 +52,7 @@ export default function RootLayout({
       <body className="flex min-h-dvh flex-col bg-background text-foreground antialiased">
         <a
           href="#main"
-          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-maroon focus:px-4 focus:py-2 focus:text-cream"
+          className="sr-only focus:not-sr-only focus:absolute focus:left-4 focus:top-4 focus:z-50 focus:rounded-full focus:bg-maroon focus:px-4 focus:py-2 focus:font-medium focus:text-cream focus:outline-none focus:ring-2 focus:ring-gold-light focus:ring-offset-2 focus:ring-offset-maroon-deep"
         >
           Skip to content
         </a>

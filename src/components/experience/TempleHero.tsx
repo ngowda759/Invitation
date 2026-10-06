@@ -53,7 +53,7 @@ export function TempleHero() {
         <ButtonLink
           href="#event"
           size="lg"
-          className="bg-gold text-brown-deep hover:bg-gold-light focus-visible:ring-gold-light focus-visible:ring-offset-maroon-deep"
+          className="bg-gold text-brown-deep hover:bg-gold-light focus-visible:ring-cream focus-visible:ring-offset-maroon-deep"
         >
           {event.cta.primary}
         </ButtonLink>

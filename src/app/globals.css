@@ -53,9 +53,26 @@
     text-rendering: optimizeLegibility;
   }
 
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
+  }
+
+  /*
+   * One focus indicator for the whole experience.
+   *
+   * Gold alone does not separate from the cream page, so the indicator pairs the gold
+   * outline with a dark ring: on the light page the dark ring carries the contrast, and
+   * on a dark surface the gold outline does. Elements on a dark surface override the
+   * ring colour with `--focus-ring-offset` (see `.gallery-lightbox`); components that
+   * declare their own `focus-visible:ring-*` keep their ring, and the outline still
+   * shows. The `:focus-visible` selector keeps the indicator off mouse clicks.
+   */
   :focus-visible {
     outline: 2px solid var(--gold);
     outline-offset: 2px;
+    box-shadow: 0 0 0 5px var(--focus-ring-offset, var(--brown-deep));
   }
 }
 
@@ -72,6 +89,11 @@
   /* The opening threshold must not delay the content when motion is reduced. */
   .opening-veil {
     animation-delay: 0s !important;
+  }
+
+  /* The hero glow is decorative; stop it entirely rather than looping it. */
+  .hero__glow {
+    animation: none !important;
   }
 }
 
@@ -180,8 +202,11 @@
  * A CSS-only full-view overlay: each thumbnail links to its own `:target`, and the
  * matching panel is revealed with `:target`. It needs no client JavaScript, so it
  * works with JavaScript disabled, and it sits below the skip link's focus layer
- * (z-45 < z-50) so keyboard focus stays visible. The backdrop is a link back to the
- * gallery, so the overlay can be closed with the keyboard alone.
+ * (z-45 < z-50) so keyboard focus stays visible. The backdrop is a pointer-only
+ * affordance (click to close) and is deliberately not focusable: the Close control
+ * inside the figure is the keyboard route out, so the tab order stays short and
+ * predictable. The overlay sits on a dark surface, so it repoints the shared focus
+ * ring to a light colour for legibility.
  */
 .gallery-lightbox {
   display: none;
@@ -191,6 +216,7 @@
   place-items: center;
   padding: 1.5rem;
   background: rgba(38, 23, 15, 0.94);
+  --focus-ring-offset: var(--cream);
 }
 
 .gallery-lightbox:target {

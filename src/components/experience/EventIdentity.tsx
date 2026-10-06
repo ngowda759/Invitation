@@ -12,16 +12,15 @@ export function EventIdentity() {
   return (
     <section
       id="event"
-      aria-labelledby="event-heading"
+      aria-label="Invitation details"
       className="scroll-mt-8 bg-background px-5 py-16 sm:px-8 sm:py-24"
     >
       <div className="mx-auto flex max-w-2xl flex-col items-center text-center">
         <TempleRule className="opacity-70" />
-        <p className="mt-6 text-xs uppercase tracking-[0.3em] text-gold">
+        <p className="mt-6 text-xs uppercase tracking-[0.3em] text-maroon/70">
           Invitation
         </p>
         <h2
-          id="event-heading"
           className="mt-3 font-display text-3xl leading-tight text-maroon sm:text-4xl"
         >
           {event.name}

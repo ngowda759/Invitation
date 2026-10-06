@@ -41,8 +41,8 @@ export default function HomePage() {
         <ShareExperience />
       </main>
 
-      <footer className="border-t border-maroon/10 bg-brown-deep px-5 py-8 sm:px-8">
-        <p className="mx-auto max-w-2xl text-center text-xs text-cream/60">
+      <footer className="border-t border-maroon/10 bg-brown-deep px-5 pt-8 pb-[max(2rem,env(safe-area-inset-bottom))] sm:px-8">
+        <p className="mx-auto max-w-2xl text-center text-xs text-cream/70">
           Digital temple invitation experience.
         </p>
       </footer>

@@ -29,7 +29,7 @@ export function SevaSection({
                     <span>{item.label}</span>
                     <span
                       aria-hidden="true"
-                      className="text-sm text-gold transition-transform group-open:rotate-45"
+                      className="text-sm text-maroon transition-transform group-open:rotate-45"
                     >
                       +
                     </span>

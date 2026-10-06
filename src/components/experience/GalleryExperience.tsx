@@ -28,7 +28,7 @@ export function GalleryExperience({
             <li key={image.src}>
               <a
                 href={`#gallery-photo-${index}`}
-                className="group relative block aspect-square overflow-hidden rounded-card border border-maroon/15 bg-paper/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-gold"
+                className="group relative block aspect-square overflow-hidden rounded-card border border-maroon/15 bg-paper/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-maroon-deep"
               >
                 <Image
                   src={image.src}
@@ -61,9 +61,12 @@ export function GalleryExperience({
           aria-label={`Enlarged photograph: ${image.alt}`}
           className="gallery-lightbox"
         >
-          <a href="#gallery" className="gallery-lightbox__backdrop">
-            <span className="sr-only">Close enlarged photograph</span>
-          </a>
+          <a
+            href="#gallery"
+            aria-hidden="true"
+            tabIndex={-1}
+            className="gallery-lightbox__backdrop"
+          />
           <figure className="gallery-lightbox__figure">
             <div className="gallery-lightbox__media">
               <Image
