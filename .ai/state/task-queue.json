@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T07:43:36.059Z",
+  "updatedAt": "2026-10-06T08:35:16.711Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -120,7 +120,7 @@
       "id": "INV-005",
       "title": "Temple Experience",
       "phase": "Phase 5 — Temple Experience",
-      "status": "READY",
+      "status": "NEXT_PHASE",
       "summary": "Deliver Phase 5 — Temple Experience for the Invitation project: temple map, gallery, location, sharing.",
       "acceptanceCriteria": [
         "temple map implemented.",
