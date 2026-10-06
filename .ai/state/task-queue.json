@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T09:45:03.161Z",
+  "updatedAt": "2026-10-06T09:45:14.485Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -229,6 +229,37 @@
         "INV-007"
       ],
       "createdAt": "2026-10-06T09:23:03.253Z"
+    },
+    {
+      "id": "INV-009",
+      "title": "Antislop",
+      "phase": "Phase 9 — Antislop",
+      "status": "READY",
+      "summary": "Deliver Phase 9 — Antislop for the Invitation project: duplicate components, dead code, unnecessary abstractions, generic AI-looking copy/UI, excessive animation, excessive cards, unnecessary dependencies, inconsistent spacing/typography.",
+      "acceptanceCriteria": [
+        "duplicate components implemented.",
+        "dead code implemented.",
+        "unnecessary abstractions implemented.",
+        "generic AI-looking copy/UI implemented.",
+        "excessive animation implemented.",
+        "excessive cards implemented.",
+        "unnecessary dependencies implemented.",
+        "inconsistent spacing/typography implemented.",
+        "Phase gate satisfied: Antislop pass."
+      ],
+      "outOfScope": [
+        "No database.",
+        "No authentication.",
+        "No complex admin portal.",
+        "No dependency on Rayaramathaynk runtime APIs.",
+        "No payment processing.",
+        "No real-time backend.",
+        "No uncontrolled third-party widgets."
+      ],
+      "dependsOn": [
+        "INV-008"
+      ],
+      "createdAt": "2026-10-06T09:45:14.483Z"
     }
   ]
 }

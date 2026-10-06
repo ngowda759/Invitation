@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T09:45:03.168Z",
-  "status": "NEXT_PHASE",
-  "currentTaskId": "INV-008",
+  "updatedAt": "2026-10-06T09:45:14.486Z",
+  "status": "READY",
+  "currentTaskId": "INV-009",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": 10,
-  "reviewedHeadSha": "29c9f3970814cb1f133356528d916784a725565c",
-  "lastVerdict": "PASS",
-  "lastCiStatus": "pending",
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
   "blockedReason": null,
   "lastMerge": {
     "taskId": "INV-008",
@@ -20,7 +20,7 @@
     "ciStatus": "pending"
   },
   "nextTask": {
-    "status": "requested",
+    "status": "applied",
     "taskId": "INV-009",
     "requestedAt": "2026-10-06T09:45:03.168Z",
     "reason": null
@@ -473,6 +473,12 @@
       "from": "NEXT_PHASE",
       "to": "NEXT_PHASE",
       "note": "Next task INV-009 requested from the openhands authority for phase Phase 9 — Antislop."
+    },
+    {
+      "at": "2026-10-06T09:45:14.486Z",
+      "from": "NEXT_PHASE",
+      "to": "READY",
+      "note": "Next task INV-009 (\"Antislop\") applied from the openhands authority for phase Phase 9 — Antislop."
     }
   ]
 }
