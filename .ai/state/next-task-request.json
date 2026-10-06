@@ -1,31 +1,31 @@
 {
   "version": 1,
-  "requestedAt": "2026-10-06T08:58:12.667Z",
+  "requestedAt": "2026-10-06T09:22:52.835Z",
   "requestedBy": "invitation-loop",
   "authority": {
     "provider": "openhands",
     "prompt": ".ai/prompts/architect.md",
     "note": "The architecture prompt is the governing specification for task generation. The configured autonomous worker (OpenHands) consumes the next-task request automatically; no human prompt is required for each task."
   },
-  "afterTaskId": "INV-006",
+  "afterTaskId": "INV-007",
   "merge": {
-    "taskId": "INV-006",
-    "prNumber": 8,
-    "headSha": "92af50f073b0bf22ca109161fd272f1b52a20daa",
-    "mergeCommit": "a120138e27b92f8899eaa02820bb8f0ace0a2e12",
-    "mergedAt": "2026-10-06T08:57:59Z",
-    "reconciledAt": "2026-10-06T08:58:12.659Z",
+    "taskId": "INV-007",
+    "prNumber": 9,
+    "headSha": "b624272245f88ba89cd89f932c3b94c46f7ab246",
+    "mergeCommit": "d24eca3e91bd5252c17dd543383448cb1bc0c524",
+    "mergedAt": "2026-10-06T09:22:39Z",
+    "reconciledAt": "2026-10-06T09:22:52.829Z",
     "ciStatus": "pending"
   },
-  "phase": "Phase 7 — Performance",
-  "suggestedId": "INV-007",
+  "phase": "Phase 8 — Security / Hardening",
+  "suggestedId": "INV-008",
   "dependsOn": [
-    "INV-006"
+    "INV-007"
   ],
   "instructions": [
     "Produce exactly one task brief for the next phase in docs/PHASES.md.",
     "Output a JSON task object satisfying .ai/schemas/task-queue.schema.json.",
-    "Provide the Markdown brief at .ai/tasks/INV-007.md.",
+    "Provide the Markdown brief at .ai/tasks/INV-008.md.",
     "Apply it with: node .ai/scripts/next-task.mjs apply --file <json> [--brief <md>]",
     "Do not invent temple facts, dates, timings, historical or religious claims."
   ]

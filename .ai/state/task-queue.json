@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T08:59:31.304Z",
+  "updatedAt": "2026-10-06T09:22:52.829Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -176,7 +176,7 @@
       "id": "INV-007",
       "title": "Performance",
       "phase": "Phase 7 — Performance",
-      "status": "READY",
+      "status": "NEXT_PHASE",
       "summary": "Deliver Phase 7 — Performance for the Invitation project: LCP < 2.5s on representative mobile conditions, CLS < 0.1, INP < 200ms where measurable, optimized image payloads, no unnecessary client components.",
       "acceptanceCriteria": [
         "LCP < 2.5s on representative mobile conditions implemented.",
