@@ -180,6 +180,29 @@ describe("task queue", () => {
   });
 });
 
+describe("dispatch credential wiring", () => {
+  const autopilot = readFileSync(
+    resolve(repoRoot, ".github/workflows/invitation-autopilot.yml"),
+    "utf8",
+  );
+
+  it("passes the OpenHands API key from a repository secret", () => {
+    expect(autopilot).toMatch(/\$\{\{\s*secrets\.OPENHANDS_API_KEY\s*\}\}/);
+  });
+
+  it("passes the OpenHands host from a repository variable, never a secret", () => {
+    // The host is not sensitive and is configured as a repository variable; reading
+    // it from `secrets` yields an empty value and silently blocks every dispatch.
+    expect(autopilot).toMatch(/\$\{\{\s*vars\.OPENHANDS_HOST\s*\}\}/);
+    expect(autopilot).not.toMatch(/\$\{\{\s*secrets\.OPENHANDS_HOST\s*\}\}/);
+  });
+
+  it("sends Accept: application/json to the dispatch endpoint", () => {
+    const client = readFileSync(resolve(repoRoot, ".ai/scripts/lib/openhands.mjs"), "utf8");
+    expect(client).toMatch(/Accept:\s*"application\/json"/);
+  });
+});
+
 describe("review report schema", () => {
   it("requires isChatGpt to be false", () => {
     const valid = {

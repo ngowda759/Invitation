@@ -159,7 +159,11 @@ export async function dispatchCurrentTask(
 
   const response = await fetchImpl(endpoint, {
     method: "POST",
-    headers: { Authorization: `Bearer ${apiKey}`, "Content-Type": "application/json" },
+    headers: {
+      Authorization: `Bearer ${apiKey}`,
+      "Content-Type": "application/json",
+      Accept: "application/json",
+    },
     body: JSON.stringify(payload),
   });
   const bodyText = await response.text();
