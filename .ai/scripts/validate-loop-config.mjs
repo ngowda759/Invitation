@@ -201,6 +201,20 @@ if (!existsSync(fromRepo(autopilotWorkflow))) {
   if (!/next-task\.mjs generate/.test(wf)) fail("autopilot workflow must run next-task.mjs generate");
   if (!/openhands-dispatch\.mjs/.test(wf)) fail("autopilot workflow must run openhands-dispatch.mjs");
   if (!/workflow_dispatch/.test(wf)) fail("autopilot workflow must support workflow_dispatch");
+
+  // 12c. Dispatch credential wiring (aligned with the proven mechanism). The API key
+  //      is a repository SECRET; the host is a non-sensitive repository VARIABLE. A
+  //      host read from `secrets` is always empty, which silently blocks every
+  //      dispatch, so require the exact sources and reject the secrets host.
+  if (!/\$\{\{\s*secrets\.OPENHANDS_API_KEY\s*\}\}/.test(wf)) {
+    fail("autopilot workflow must pass OPENHANDS_API_KEY from secrets.OPENHANDS_API_KEY");
+  }
+  if (!/\$\{\{\s*vars\.OPENHANDS_HOST\s*\}\}/.test(wf)) {
+    fail("autopilot workflow must pass OPENHANDS_HOST from vars.OPENHANDS_HOST");
+  }
+  if (/\$\{\{\s*secrets\.OPENHANDS_HOST\s*\}\}/.test(wf)) {
+    fail("autopilot workflow must not read OPENHANDS_HOST from secrets; it is a repository variable");
+  }
 }
 
 notes.push(`states: ${machineStates.length}`);

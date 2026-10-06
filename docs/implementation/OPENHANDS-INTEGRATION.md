@@ -78,19 +78,35 @@ reconciliation does when it persists the next-task request), and on manual dispa
 Both steps are idempotent, and a run that changes nothing makes no commit, so the
 workflow cannot recurse.
 
-## Secrets
+## Secrets and variables
+
+`OPENHANDS_API_KEY` is a **repository secret**. `OPENHANDS_HOST` is a **repository
+variable** (`vars.OPENHANDS_HOST`), because the host is not sensitive. The autopilot
+workflow reads each from its correct source:
+
+```yaml
+env:
+  OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
+  OPENHANDS_HOST: ${{ vars.OPENHANDS_HOST }}
+```
+
+Reading the host from `secrets` yields an empty value, and a missing `OPENHANDS_API_KEY`
+secret records a `blocked` dispatch — the job then exits non-zero. This is the same
+secret-for-the-key / variable-for-the-host mechanism proven in the reference loop; the
+validator (`validate-loop-config.mjs`, check 12c) and `tests/unit/automation.test.mjs`
+fail if the wiring regresses.
 
 Required:
 
-- `OPENHANDS_API_KEY`
+- `OPENHANDS_API_KEY` (secret)
 
 Optional:
 
-- `OPENHANDS_HOST`
-- `OPENROUTER_API_KEY` (used by the machine reviewer, not by dispatch)
-- `OPENROUTER_REVIEW_MODEL`
+- `OPENHANDS_HOST` (variable; default `https://app.all-hands.dev`)
+- `OPENROUTER_API_KEY` (secret; used by the machine reviewer, not by dispatch)
+- `OPENROUTER_REVIEW_MODEL` (variable)
 
-Credentials are supplied through GitHub Actions secrets or the orchestration
+Credentials are supplied through GitHub Actions secrets/variables or the orchestration
 platform and are never committed.
 
 ## Workflow self-modification permission requirement

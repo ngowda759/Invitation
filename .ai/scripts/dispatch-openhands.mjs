@@ -93,6 +93,7 @@ const response = await fetch(endpoint, {
   headers: {
     Authorization: `Bearer ${apiKey}`,
     "Content-Type": "application/json",
+    Accept: "application/json",
   },
   body: JSON.stringify(payload),
 });

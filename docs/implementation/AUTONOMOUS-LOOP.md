@@ -106,6 +106,6 @@ OPENHANDS_API_KEY=... node .ai/scripts/openhands-dispatch.mjs --dry-run --json
 
 | Secret | Purpose |
 | --- | --- |
-| `OPENHANDS_API_KEY` | Bearer token for the OpenHands Cloud V1 API. Without it dispatch records a `blocked` state; generation still works. |
-| `OPENHANDS_HOST` | Optional. Overrides the API host (default `https://app.all-hands.dev`). |
+| `OPENHANDS_API_KEY` | Repository **secret**. Bearer token for the OpenHands Cloud V1 API. Without it dispatch records a `blocked` state; generation still works. |
+| `OPENHANDS_HOST` | Optional repository **variable** (`vars.OPENHANDS_HOST`). Overrides the API host (default `https://app.all-hands.dev`). |
 | `INVITATION_AUTOMATION_TOKEN` | Optional. A write-capable token used by the workflows to persist generated state and dispatch records to `main` (falls back to `GITHUB_TOKEN`). |

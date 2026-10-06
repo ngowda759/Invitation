@@ -70,11 +70,15 @@ jobs:
 
       # Dispatch is idempotent: a task with a recorded dispatch is never dispatched
       # again. A missing credential records a blocked dispatch and exits non-zero.
+      #
+      # The API key is a repository SECRET; the host is a repository VARIABLE (it is
+      # not sensitive). Reading the host from `secrets` is always empty because the
+      # variable lives under `vars`, so the host must be read from `vars.OPENHANDS_HOST`.
       - name: Dispatch OpenHands
         if: steps.generate.outcome == 'success'
         env:
           OPENHANDS_API_KEY: ${{ secrets.OPENHANDS_API_KEY }}
-          OPENHANDS_HOST: ${{ secrets.OPENHANDS_HOST }}
+          OPENHANDS_HOST: ${{ vars.OPENHANDS_HOST }}
         run: |
           set -euo pipefail
           node .ai/scripts/openhands-dispatch.mjs --json | tee /tmp/dispatch.json
