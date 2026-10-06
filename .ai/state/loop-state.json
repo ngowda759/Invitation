@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T05:10:11.144Z",
-  "status": "NEXT_PHASE",
-  "currentTaskId": "INV-002",
+  "updatedAt": "2026-10-06T05:10:22.008Z",
+  "status": "READY",
+  "currentTaskId": "INV-003",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": 3,
-  "reviewedHeadSha": "1f46814ef27b817b7066b20553bc956b4db0af01",
-  "lastVerdict": "PASS",
-  "lastCiStatus": "success",
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
   "blockedReason": null,
   "lastMerge": {
     "taskId": "INV-002",
@@ -20,7 +20,7 @@
     "ciStatus": "success"
   },
   "nextTask": {
-    "status": "requested",
+    "status": "applied",
     "taskId": "INV-003",
     "requestedAt": "2026-10-06T05:10:11.143Z",
     "reason": null
@@ -143,6 +143,12 @@
       "from": "NEXT_PHASE",
       "to": "NEXT_PHASE",
       "note": "Next task INV-003 requested from the openhands authority for phase Phase 3 — Opening + Hero."
+    },
+    {
+      "at": "2026-10-06T05:10:22.008Z",
+      "from": "NEXT_PHASE",
+      "to": "READY",
+      "note": "Next task INV-003 (\"Opening + Hero\") applied from the openhands authority for phase Phase 3 — Opening + Hero."
     }
   ]
 }
