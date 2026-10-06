@@ -1,28 +1,28 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T09:23:03.256Z",
-  "status": "READY",
+  "updatedAt": "2026-10-06T09:45:03.168Z",
+  "status": "NEXT_PHASE",
   "currentTaskId": "INV-008",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": null,
-  "reviewedHeadSha": null,
-  "lastVerdict": null,
-  "lastCiStatus": null,
+  "currentPr": 10,
+  "reviewedHeadSha": "29c9f3970814cb1f133356528d916784a725565c",
+  "lastVerdict": "PASS",
+  "lastCiStatus": "pending",
   "blockedReason": null,
   "lastMerge": {
-    "taskId": "INV-007",
-    "prNumber": 9,
-    "headSha": "b624272245f88ba89cd89f932c3b94c46f7ab246",
-    "mergeCommit": "d24eca3e91bd5252c17dd543383448cb1bc0c524",
-    "mergedAt": "2026-10-06T09:22:39Z",
-    "reconciledAt": "2026-10-06T09:22:52.829Z",
+    "taskId": "INV-008",
+    "prNumber": 10,
+    "headSha": "29c9f3970814cb1f133356528d916784a725565c",
+    "mergeCommit": "152b73b23014fbdcd0bfc73f248a5d6d61b2772e",
+    "mergedAt": "2026-10-06T09:44:52Z",
+    "reconciledAt": "2026-10-06T09:45:03.161Z",
     "ciStatus": "pending"
   },
   "nextTask": {
-    "status": "applied",
-    "taskId": "INV-008",
-    "requestedAt": "2026-10-06T09:22:52.835Z",
+    "status": "requested",
+    "taskId": "INV-009",
+    "requestedAt": "2026-10-06T09:45:03.168Z",
     "reason": null
   },
   "completedTasks": [
@@ -32,7 +32,8 @@
     "INV-004",
     "INV-005",
     "INV-006",
-    "INV-007"
+    "INV-007",
+    "INV-008"
   ],
   "history": [
     {
@@ -424,6 +425,54 @@
       "from": "NEXT_PHASE",
       "to": "READY",
       "note": "Next task INV-008 (\"Security / Hardening\") applied from the openhands authority for phase Phase 8 — Security / Hardening."
+    },
+    {
+      "at": "2026-10-06T09:45:03.162Z",
+      "from": "READY",
+      "to": "IMPLEMENTING",
+      "note": "Reconciled INV-008 from verified merge evidence (PR #10, merge commit 152b73b23014fbdcd0bfc73f248a5d6d61b2772e)."
+    },
+    {
+      "at": "2026-10-06T09:45:03.163Z",
+      "from": "IMPLEMENTING",
+      "to": "TESTING",
+      "note": "CI evidence for INV-008 head 29c9f3970814cb1f133356528d916784a725565c: pending."
+    },
+    {
+      "at": "2026-10-06T09:45:03.163Z",
+      "from": "TESTING",
+      "to": "ANTISLOP_REVIEW",
+      "note": "AntiSlop and quality checks recorded as passing for INV-008."
+    },
+    {
+      "at": "2026-10-06T09:45:03.164Z",
+      "from": "ANTISLOP_REVIEW",
+      "to": "CHATGPT_REVIEW",
+      "note": "Passed through the review gate on verified merge evidence; no automated ChatGPT review is fabricated."
+    },
+    {
+      "at": "2026-10-06T09:45:03.165Z",
+      "from": "CHATGPT_REVIEW",
+      "to": "APPROVED",
+      "note": "Approved from verified merge evidence for INV-008."
+    },
+    {
+      "at": "2026-10-06T09:45:03.166Z",
+      "from": "APPROVED",
+      "to": "MERGED",
+      "note": "INV-008 merged as PR #10 (merge commit 152b73b23014fbdcd0bfc73f248a5d6d61b2772e)."
+    },
+    {
+      "at": "2026-10-06T09:45:03.166Z",
+      "from": "MERGED",
+      "to": "NEXT_PHASE",
+      "note": "Phase complete for INV-008; requesting the next task from the openhands authority."
+    },
+    {
+      "at": "2026-10-06T09:45:03.168Z",
+      "from": "NEXT_PHASE",
+      "to": "NEXT_PHASE",
+      "note": "Next task INV-009 requested from the openhands authority for phase Phase 9 — Antislop."
     }
   ]
 }
