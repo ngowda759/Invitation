@@ -1,31 +1,31 @@
 {
   "version": 1,
-  "requestedAt": "2026-10-06T09:45:03.168Z",
+  "requestedAt": "2026-10-06T10:17:02.366Z",
   "requestedBy": "invitation-loop",
   "authority": {
     "provider": "openhands",
     "prompt": ".ai/prompts/architect.md",
     "note": "The architecture prompt is the governing specification for task generation. The configured autonomous worker (OpenHands) consumes the next-task request automatically; no human prompt is required for each task."
   },
-  "afterTaskId": "INV-008",
+  "afterTaskId": "INV-009",
   "merge": {
-    "taskId": "INV-008",
-    "prNumber": 10,
-    "headSha": "29c9f3970814cb1f133356528d916784a725565c",
-    "mergeCommit": "152b73b23014fbdcd0bfc73f248a5d6d61b2772e",
-    "mergedAt": "2026-10-06T09:44:52Z",
-    "reconciledAt": "2026-10-06T09:45:03.161Z",
+    "taskId": "INV-009",
+    "prNumber": 11,
+    "headSha": "e724207acbe25b3dec8c2f6a91d77cd992390aba",
+    "mergeCommit": "0e1bc802b4bcb71b70527bc0a572c477ebef344e",
+    "mergedAt": "2026-10-06T10:16:52Z",
+    "reconciledAt": "2026-10-06T10:17:02.359Z",
     "ciStatus": "pending"
   },
-  "phase": "Phase 9 — Antislop",
-  "suggestedId": "INV-009",
+  "phase": "Phase 10 — Release",
+  "suggestedId": "INV-010",
   "dependsOn": [
-    "INV-008"
+    "INV-009"
   ],
   "instructions": [
     "Produce exactly one task brief for the next phase in docs/PHASES.md.",
     "Output a JSON task object satisfying .ai/schemas/task-queue.schema.json.",
-    "Provide the Markdown brief at .ai/tasks/INV-009.md.",
+    "Provide the Markdown brief at .ai/tasks/INV-010.md.",
     "Apply it with: node .ai/scripts/next-task.mjs apply --file <json> [--brief <md>]",
     "Do not invent temple facts, dates, timings, historical or religious claims."
   ]
