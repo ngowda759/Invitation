@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T08:35:26.432Z",
+  "updatedAt": "2026-10-06T08:58:12.659Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -147,7 +147,7 @@
       "id": "INV-006",
       "title": "Mobile / Accessibility",
       "phase": "Phase 6 — Mobile / Accessibility",
-      "status": "READY",
+      "status": "NEXT_PHASE",
       "summary": "Deliver Phase 6 — Mobile / Accessibility for the Invitation project: mobile polish, keyboard navigation, focus states, reduced motion, semantic structure, screen-reader sanity checks.",
       "acceptanceCriteria": [
         "mobile polish implemented.",
