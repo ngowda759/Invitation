@@ -68,4 +68,108 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+
+  /* The opening threshold must not delay the content when motion is reduced. */
+  .opening-veil {
+    animation-delay: 0s !important;
+  }
+}
+
+/*
+ * Opening experience.
+ *
+ * A fixed, presentational threshold that dissolves on its own with CSS only. It sits
+ * below the skip link's focus layer (z-40 < z-50) so keyboard focus stays visible, and
+ * it never captures pointer events. With `prefers-reduced-motion` the global rule above
+ * collapses the animation, so the veil is removed immediately.
+ */
+.opening-veil {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  pointer-events: none;
+  background:
+    radial-gradient(60% 50% at 50% 45%, rgba(201, 154, 50, 0.16), transparent 70%),
+    linear-gradient(180deg, #3f0510 0%, #5a0714 60%, #26170f 100%);
+  animation: opening-dissolve 1.2s ease-out 0.15s forwards;
+}
+
+.opening-veil__glow {
+  position: absolute;
+  height: 22rem;
+  width: 22rem;
+  max-width: 80vw;
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(230, 198, 106, 0.4), transparent 68%);
+  filter: blur(6px);
+}
+
+.opening-veil__diya {
+  position: relative;
+  filter: drop-shadow(0 0 20px rgba(230, 198, 106, 0.6));
+  animation: opening-rise 1.2s ease-out 0.15s forwards;
+}
+
+@keyframes opening-dissolve {
+  to {
+    opacity: 0;
+    visibility: hidden;
+  }
+}
+
+@keyframes opening-rise {
+  from {
+    opacity: 0;
+    transform: translateY(10px) scale(0.96);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+/*
+ * Temple hero.
+ *
+ * A full-bleed, darkened maroon field with a warm lamp glow and a restrained grain.
+ * Motion is limited to a slow glow that respects `prefers-reduced-motion`.
+ */
+.hero {
+  background:
+    radial-gradient(130% 85% at 50% -10%, rgba(201, 154, 50, 0.24), transparent 62%),
+    linear-gradient(180deg, #3f0510 0%, #5a0714 55%, #26170f 100%);
+}
+
+.hero__glow {
+  position: absolute;
+  top: -6rem;
+  left: 50%;
+  height: 30rem;
+  width: 30rem;
+  max-width: 92vw;
+  transform: translateX(-50%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(230, 198, 106, 0.28), transparent 66%);
+  filter: blur(10px);
+  animation: hero-breathe 8s ease-in-out infinite alternate;
+}
+
+.hero__grain {
+  position: absolute;
+  inset: 0;
+  opacity: 0.06;
+  mix-blend-mode: soft-light;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+@keyframes hero-breathe {
+  from {
+    opacity: 0.7;
+  }
+  to {
+    opacity: 1;
+  }
 }
