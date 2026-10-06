@@ -1,0 +1,90 @@
+name: Deploy to GitHub Pages
+
+# Builds the Next.js static export and publishes it to GitHub Pages.
+#
+# This is the deployment workflow for the released invitation. It replaces the
+# previous legacy "deploy from a branch" Pages build, which served the repository
+# README through Jekyll instead of the built application. It uploads only the
+# generated static output (`out/`), never the repository source or docs tree.
+#
+# It runs on every push to main (i.e. after a task PR is merged) and on demand.
+# The application's own gates (lint, typecheck, unit tests, e2e) run in the
+# separate CI workflow on the same push, so this workflow does not duplicate them;
+# `next build` still type-checks as part of producing the export.
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# Least privilege for a Pages deployment: read the source, write the Pages site,
+# and mint the OIDC token `deploy-pages` needs. No other scope is requested.
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# Allow one concurrent Pages deployment but never cancel an in-progress production
+# deployment; a queued run waits rather than interrupts a live publish.
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build static export
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+
+      - name: Install dependencies
+        run: npm ci
+
+      # Resolves the Pages site (enabling it for Actions if needed) and exposes the
+      # project sub-path. For this repository `base_path` is `/Invitation`.
+      - name: Setup Pages
+        id: setup_pages
+        uses: actions/configure-pages@v5
+
+      # `PAGES_BASE_PATH` is consumed by next.config.ts so asset and route URLs are
+      # prefixed with the project sub-path. It is empty in local development.
+      - name: Build static export
+        run: npm run build
+        env:
+          PAGES_BASE_PATH: ${{ steps.setup_pages.outputs.base_path }}
+
+      # Fail the deployment if the export is missing or is not the application.
+      # This is the guard that stops a source/docs tree ever being published.
+      - name: Verify static export
+        shell: bash
+        run: |
+          set -euo pipefail
+          test -f out/index.html || { echo "::error::Static export produced no out/index.html"; exit 1; }
+          grep -q "_next/static" out/index.html || { echo "::error::out/index.html is not a Next.js document"; exit 1; }
+          test ! -f out/README.md || { echo "::error::Export contains repository documentation"; exit 1; }
+          echo "Static export verified: $(find out -type f | wc -l) files."
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          # The generated Next.js output only — not the repository root.
+          path: ./out
+
+  deploy:
+    name: Deploy to GitHub Pages
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

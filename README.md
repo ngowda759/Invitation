@@ -48,6 +48,24 @@ node .ai/scripts/antislop.mjs --json        # blocking AntiSlop gate
 
 See `.ai/README.md` and `docs/AUTOMATION.md`.
 
+## Deployment
+
+The invitation is published to GitHub Pages as a **static export**:
+
+<https://ngowda759.github.io/Invitation/>
+
+`next.config.ts` sets `output: "export"`, so `npm run build` writes plain
+HTML/CSS/JS to `out/`. The `.github/workflows/deploy-pages.yml` workflow runs on
+every push to `main` and on demand: it builds the export, uploads only `out/` as
+the Pages artifact, and deploys it with the GitHub Pages Actions. GitHub Pages
+must be set to **Source: GitHub Actions**.
+
+Because the site is hosted under the project sub-path `/Invitation/`, the build
+reads its base path from `PAGES_BASE_PATH` (filled from
+`actions/configure-pages`). It is empty for local development, so
+`npm run dev` is unaffected and nothing is hard-coded per environment. See
+`docs/implementation/POST-RELEASE-PAGES-DEPLOYMENT.md`.
+
 ## Delivery system
 
 - **ChatGPT** — architecture, product requirements, design direction, UX, acceptance
