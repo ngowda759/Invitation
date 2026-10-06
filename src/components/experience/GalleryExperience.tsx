@@ -34,6 +34,10 @@ export function GalleryExperience({
                   src={image.src}
                   alt={image.alt}
                   fill
+                  // Thumbnails are never above the fold, so they stay lazy; the
+                  // lower quality is invisible at this display size.
+                  loading="lazy"
+                  quality={60}
                   sizes="(max-width: 640px) 50vw, 33vw"
                   className="object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none"
                 />
