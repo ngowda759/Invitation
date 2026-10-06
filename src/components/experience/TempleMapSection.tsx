@@ -2,6 +2,7 @@ import { ContentPlaceholder } from "@/components/experience/ContentPlaceholder";
 import { ContentSection } from "@/components/experience/ContentSection";
 import { ButtonLink } from "@/components/ui/button";
 import { map as defaultContent, type MapContent } from "@/content/map";
+import { EXTERNAL_LINK_REL } from "@/lib/security";
 
 /**
  * Temple map section.
@@ -24,7 +25,7 @@ export function TempleMapSection({
           <ButtonLink
             href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(place)}`}
             target="_blank"
-            rel="noopener noreferrer"
+            rel={EXTERNAL_LINK_REL}
             size="lg"
           >
             Open the temple map

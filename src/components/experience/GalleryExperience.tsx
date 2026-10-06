@@ -3,6 +3,7 @@ import Image from "next/image";
 import { ContentPlaceholder } from "@/components/experience/ContentPlaceholder";
 import { ContentSection } from "@/components/experience/ContentSection";
 import { gallery as defaultContent, type GalleryContent } from "@/content/gallery";
+import { isSafeImageSrc } from "@/lib/security";
 
 /**
  * Gallery.
@@ -19,12 +20,15 @@ export function GalleryExperience({
   content?: GalleryContent;
 }) {
   const { images } = content;
+  // Only same-origin public paths are rendered; a malformed or absolute source is
+  // dropped rather than passed to the image optimizer.
+  const safeImages = images.filter((image) => isSafeImageSrc(image.src));
 
   return (
     <ContentSection id="gallery" heading="Gallery" intro={content.intro}>
-      {images.length > 0 ? (
+      {safeImages.length > 0 ? (
         <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
-          {images.map((image, index) => (
+          {safeImages.map((image, index) => (
             <li key={image.src}>
               <a
                 href={`#gallery-photo-${index}`}
@@ -57,7 +61,7 @@ export function GalleryExperience({
         </ContentPlaceholder>
       )}
 
-      {images.map((image, index) => (
+      {safeImages.map((image, index) => (
         <div
           key={image.src}
           id={`gallery-photo-${index}`}
