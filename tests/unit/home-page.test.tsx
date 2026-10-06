@@ -53,9 +53,15 @@ describe("Invitation home (Opening + Hero)", () => {
     ).toHaveTextContent(event.name);
   });
 
-  it("does not present fabricated event or timing content", () => {
+  it("does not present fabricated timing content", () => {
     render(<HomePage />);
     expect(screen.queryByText(/\b\d{1,2}:\d{2}\s?(am|pm)\b/i)).toBeNull();
-    expect(screen.queryByText(/\b(seva|darshan|pooja)\b/i)).toBeNull();
+  });
+
+  it("composes the five invitation content sections as landmarks", () => {
+    render(<HomePage />);
+    for (const id of ["darshan", "festival", "programme", "rayaru", "seva"]) {
+      expect(document.getElementById(id)).not.toBeNull();
+    }
   });
 });
