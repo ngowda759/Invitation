@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T10:17:12.910Z",
+  "updatedAt": "2026-10-06T11:16:42.087Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -265,7 +265,7 @@
       "id": "INV-010",
       "title": "Release",
       "phase": "Phase 10 — Release",
-      "status": "READY",
+      "status": "NEXT_PHASE",
       "summary": "Deliver Phase 10 — Release for the Invitation project: unit tests, e2e tests, lint, typecheck, build, performance, security, Antislop, final ChatGPT review.",
       "acceptanceCriteria": [
         "unit tests implemented.",

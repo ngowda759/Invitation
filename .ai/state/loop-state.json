@@ -1,29 +1,29 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T10:17:12.944Z",
-  "status": "READY",
+  "updatedAt": "2026-10-06T11:16:42.093Z",
+  "status": "NEXT_PHASE",
   "currentTaskId": "INV-010",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": null,
-  "reviewedHeadSha": null,
-  "lastVerdict": null,
-  "lastCiStatus": null,
-  "blockedReason": null,
+  "currentPr": 12,
+  "reviewedHeadSha": "5afb93a887a90e31dc72013d2a20a6a3273237dd",
+  "lastVerdict": "PASS",
+  "lastCiStatus": "pending",
+  "blockedReason": "No phase follows \"Phase 10 — Release\" in docs/PHASES.md; the authority must supply the next phase.",
   "lastMerge": {
-    "taskId": "INV-009",
-    "prNumber": 11,
-    "headSha": "e724207acbe25b3dec8c2f6a91d77cd992390aba",
-    "mergeCommit": "0e1bc802b4bcb71b70527bc0a572c477ebef344e",
-    "mergedAt": "2026-10-06T10:16:52Z",
-    "reconciledAt": "2026-10-06T10:17:02.359Z",
+    "taskId": "INV-010",
+    "prNumber": 12,
+    "headSha": "5afb93a887a90e31dc72013d2a20a6a3273237dd",
+    "mergeCommit": "92da4564e45eb347a99a022bd6acb81f8bc3bec8",
+    "mergedAt": "2026-10-06T11:16:31Z",
+    "reconciledAt": "2026-10-06T11:16:42.087Z",
     "ciStatus": "pending"
   },
   "nextTask": {
-    "status": "applied",
-    "taskId": "INV-010",
-    "requestedAt": "2026-10-06T10:17:02.366Z",
-    "reason": null
+    "status": "failed",
+    "taskId": null,
+    "requestedAt": null,
+    "reason": "No phase follows \"Phase 10 — Release\" in docs/PHASES.md; the authority must supply the next phase."
   },
   "completedTasks": [
     "INV-001",
@@ -34,7 +34,8 @@
     "INV-006",
     "INV-007",
     "INV-008",
-    "INV-009"
+    "INV-009",
+    "INV-010"
   ],
   "history": [
     {
@@ -534,6 +535,54 @@
       "from": "NEXT_PHASE",
       "to": "READY",
       "note": "Next task INV-010 (\"Release\") applied from the openhands authority for phase Phase 10 — Release."
+    },
+    {
+      "at": "2026-10-06T11:16:42.087Z",
+      "from": "READY",
+      "to": "IMPLEMENTING",
+      "note": "Reconciled INV-010 from verified merge evidence (PR #12, merge commit 92da4564e45eb347a99a022bd6acb81f8bc3bec8)."
+    },
+    {
+      "at": "2026-10-06T11:16:42.088Z",
+      "from": "IMPLEMENTING",
+      "to": "TESTING",
+      "note": "CI evidence for INV-010 head 5afb93a887a90e31dc72013d2a20a6a3273237dd: pending."
+    },
+    {
+      "at": "2026-10-06T11:16:42.089Z",
+      "from": "TESTING",
+      "to": "ANTISLOP_REVIEW",
+      "note": "AntiSlop and quality checks recorded as passing for INV-010."
+    },
+    {
+      "at": "2026-10-06T11:16:42.090Z",
+      "from": "ANTISLOP_REVIEW",
+      "to": "CHATGPT_REVIEW",
+      "note": "Passed through the review gate on verified merge evidence; no automated ChatGPT review is fabricated."
+    },
+    {
+      "at": "2026-10-06T11:16:42.091Z",
+      "from": "CHATGPT_REVIEW",
+      "to": "APPROVED",
+      "note": "Approved from verified merge evidence for INV-010."
+    },
+    {
+      "at": "2026-10-06T11:16:42.091Z",
+      "from": "APPROVED",
+      "to": "MERGED",
+      "note": "INV-010 merged as PR #12 (merge commit 92da4564e45eb347a99a022bd6acb81f8bc3bec8)."
+    },
+    {
+      "at": "2026-10-06T11:16:42.092Z",
+      "from": "MERGED",
+      "to": "NEXT_PHASE",
+      "note": "Phase complete for INV-010; requesting the next task from the openhands authority."
+    },
+    {
+      "at": "2026-10-06T11:16:42.093Z",
+      "from": "NEXT_PHASE",
+      "to": "NEXT_PHASE",
+      "note": "Next-task generation blocked: No phase follows \"Phase 10 — Release\" in docs/PHASES.md; the authority must supply the next phase."
     }
   ]
 }
