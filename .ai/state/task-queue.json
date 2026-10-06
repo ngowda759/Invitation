@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T08:35:16.711Z",
+  "updatedAt": "2026-10-06T08:35:26.432Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -142,6 +142,35 @@
         "INV-004"
       ],
       "createdAt": "2026-10-06T07:43:36.058Z"
+    },
+    {
+      "id": "INV-006",
+      "title": "Mobile / Accessibility",
+      "phase": "Phase 6 — Mobile / Accessibility",
+      "status": "READY",
+      "summary": "Deliver Phase 6 — Mobile / Accessibility for the Invitation project: mobile polish, keyboard navigation, focus states, reduced motion, semantic structure, screen-reader sanity checks.",
+      "acceptanceCriteria": [
+        "mobile polish implemented.",
+        "keyboard navigation implemented.",
+        "focus states implemented.",
+        "reduced motion implemented.",
+        "semantic structure implemented.",
+        "screen-reader sanity checks implemented.",
+        "Phase gate satisfied: accessibility checklist."
+      ],
+      "outOfScope": [
+        "No database.",
+        "No authentication.",
+        "No complex admin portal.",
+        "No dependency on Rayaramathaynk runtime APIs.",
+        "No payment processing.",
+        "No real-time backend.",
+        "No uncontrolled third-party widgets."
+      ],
+      "dependsOn": [
+        "INV-005"
+      ],
+      "createdAt": "2026-10-06T08:35:26.430Z"
     }
   ]
 }

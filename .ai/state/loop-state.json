@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T08:35:16.718Z",
-  "status": "NEXT_PHASE",
-  "currentTaskId": "INV-005",
+  "updatedAt": "2026-10-06T08:35:26.433Z",
+  "status": "READY",
+  "currentTaskId": "INV-006",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": 7,
-  "reviewedHeadSha": "7710a7b35c85ca3adf3590b9c58585274974b256",
-  "lastVerdict": "PASS",
-  "lastCiStatus": "pending",
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
   "blockedReason": null,
   "lastMerge": {
     "taskId": "INV-005",
@@ -20,7 +20,7 @@
     "ciStatus": "pending"
   },
   "nextTask": {
-    "status": "requested",
+    "status": "applied",
     "taskId": "INV-006",
     "requestedAt": "2026-10-06T08:35:16.717Z",
     "reason": null
@@ -308,6 +308,12 @@
       "from": "NEXT_PHASE",
       "to": "NEXT_PHASE",
       "note": "Next task INV-006 requested from the openhands authority for phase Phase 6 — Mobile / Accessibility."
+    },
+    {
+      "at": "2026-10-06T08:35:26.433Z",
+      "from": "NEXT_PHASE",
+      "to": "READY",
+      "note": "Next task INV-006 (\"Mobile / Accessibility\") applied from the openhands authority for phase Phase 6 — Mobile / Accessibility."
     }
   ]
 }
