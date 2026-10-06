@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-05T12:30:39.799Z",
+  "updatedAt": "2026-10-06T05:10:11.140Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -34,7 +34,7 @@
       "id": "INV-002",
       "title": "Visual System",
       "phase": "Phase 2 — Visual System",
-      "status": "READY",
+      "status": "NEXT_PHASE",
       "summary": "Deliver Phase 2 — Visual System for the Invitation project: typography, colors, spacing, motion primitives, ornaments, buttons/cards, responsive foundations.",
       "acceptanceCriteria": [
         "typography implemented.",
