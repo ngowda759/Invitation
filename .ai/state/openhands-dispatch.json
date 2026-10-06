@@ -1,11 +1,11 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T07:17:37.380Z",
-  "taskId": "INV-004",
+  "updatedAt": "2026-10-06T07:43:38.281Z",
+  "taskId": "INV-005",
   "status": "dispatched",
   "sourceState": "READY",
-  "conversationId": "490004a4fde34373a25d9027cb317d3a",
-  "startTaskId": "490004a4fde34373a25d9027cb317d3a",
-  "dispatchedAt": "2026-10-06T07:17:37.380Z",
+  "conversationId": "cea9f51bf45f4262aaf663d300cde609",
+  "startTaskId": "cea9f51bf45f4262aaf663d300cde609",
+  "dispatchedAt": "2026-10-06T07:43:38.281Z",
   "reason": null
 }
