@@ -1,31 +1,31 @@
 {
   "version": 1,
-  "requestedAt": "2026-10-06T05:10:11.143Z",
+  "requestedAt": "2026-10-06T07:17:19.537Z",
   "requestedBy": "invitation-loop",
   "authority": {
     "provider": "openhands",
     "prompt": ".ai/prompts/architect.md",
     "note": "The architecture prompt is the governing specification for task generation. The configured autonomous worker (OpenHands) consumes the next-task request automatically; no human prompt is required for each task."
   },
-  "afterTaskId": "INV-002",
+  "afterTaskId": "INV-003",
   "merge": {
-    "taskId": "INV-002",
-    "prNumber": 3,
-    "headSha": "1f46814ef27b817b7066b20553bc956b4db0af01",
-    "mergeCommit": "5efc11063ba30df753d260f8032b2fbbbcdd09ea",
-    "mergedAt": "2026-10-05T12:30:14Z",
-    "reconciledAt": "2026-10-06T05:10:11.140Z",
-    "ciStatus": "success"
+    "taskId": "INV-003",
+    "prNumber": 5,
+    "headSha": "fea88faf4bfd6d8fcd9dd07c41693b8fe1a20ab9",
+    "mergeCommit": "3eed04471edb84691d4715ba2cf9a5be35384369",
+    "mergedAt": "2026-10-06T07:17:08Z",
+    "reconciledAt": "2026-10-06T07:17:19.533Z",
+    "ciStatus": "pending"
   },
-  "phase": "Phase 3 — Opening + Hero",
-  "suggestedId": "INV-003",
+  "phase": "Phase 4 — Invitation Content",
+  "suggestedId": "INV-004",
   "dependsOn": [
-    "INV-002"
+    "INV-003"
   ],
   "instructions": [
     "Produce exactly one task brief for the next phase in docs/PHASES.md.",
     "Output a JSON task object satisfying .ai/schemas/task-queue.schema.json.",
-    "Provide the Markdown brief at .ai/tasks/INV-003.md.",
+    "Provide the Markdown brief at .ai/tasks/INV-004.md.",
     "Apply it with: node .ai/scripts/next-task.mjs apply --file <json> [--brief <md>]",
     "Do not invent temple facts, dates, timings, historical or religious claims."
   ]
