@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T08:58:12.667Z",
-  "status": "NEXT_PHASE",
-  "currentTaskId": "INV-006",
+  "updatedAt": "2026-10-06T08:59:31.305Z",
+  "status": "READY",
+  "currentTaskId": "INV-007",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": 8,
-  "reviewedHeadSha": "92af50f073b0bf22ca109161fd272f1b52a20daa",
-  "lastVerdict": "PASS",
-  "lastCiStatus": "pending",
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
   "blockedReason": null,
   "lastMerge": {
     "taskId": "INV-006",
@@ -20,7 +20,7 @@
     "ciStatus": "pending"
   },
   "nextTask": {
-    "status": "requested",
+    "status": "applied",
     "taskId": "INV-007",
     "requestedAt": "2026-10-06T08:58:12.667Z",
     "reason": null
@@ -363,6 +363,12 @@
       "from": "NEXT_PHASE",
       "to": "NEXT_PHASE",
       "note": "Next task INV-007 requested from the openhands authority for phase Phase 7 — Performance."
+    },
+    {
+      "at": "2026-10-06T08:59:31.305Z",
+      "from": "NEXT_PHASE",
+      "to": "READY",
+      "note": "Next task INV-007 (\"Performance\") applied from the openhands authority for phase Phase 7 — Performance."
     }
   ]
 }

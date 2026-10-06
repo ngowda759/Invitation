@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T08:58:12.659Z",
+  "updatedAt": "2026-10-06T08:59:31.304Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -171,6 +171,34 @@
         "INV-005"
       ],
       "createdAt": "2026-10-06T08:35:26.430Z"
+    },
+    {
+      "id": "INV-007",
+      "title": "Performance",
+      "phase": "Phase 7 — Performance",
+      "status": "READY",
+      "summary": "Deliver Phase 7 — Performance for the Invitation project: LCP < 2.5s on representative mobile conditions, CLS < 0.1, INP < 200ms where measurable, optimized image payloads, no unnecessary client components.",
+      "acceptanceCriteria": [
+        "LCP < 2.5s on representative mobile conditions implemented.",
+        "CLS < 0.1 implemented.",
+        "INP < 200ms where measurable implemented.",
+        "optimized image payloads implemented.",
+        "no unnecessary client components implemented.",
+        "Phase gate satisfied: performance report."
+      ],
+      "outOfScope": [
+        "No database.",
+        "No authentication.",
+        "No complex admin portal.",
+        "No dependency on Rayaramathaynk runtime APIs.",
+        "No payment processing.",
+        "No real-time backend.",
+        "No uncontrolled third-party widgets."
+      ],
+      "dependsOn": [
+        "INV-006"
+      ],
+      "createdAt": "2026-10-06T08:59:31.302Z"
     }
   ]
 }
