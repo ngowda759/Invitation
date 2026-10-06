@@ -55,14 +55,34 @@ const securityHeaders = [
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
+  /**
+   * Static export for GitHub Pages project hosting.
+   *
+   * The invitation is a static-first site with no backend, so it is exported to
+   * plain HTML/CSS/JS in `out/` and served by GitHub Pages — there is no Node
+   * runtime on Pages. `basePath` is read from `PAGES_BASE_PATH`, which the Pages
+   * workflow fills from the `actions/configure-pages` `base_path` output (for this
+   * repository `/Invitation`). It stays empty for local development, the e2e dev
+   * server and any root-hosted deployment, so nothing is hard-coded per environment.
+   */
+  output: "export",
+  basePath: (process.env.PAGES_BASE_PATH ?? "").replace(/\/+$/, ""),
   // The Playwright dev server is reached over 127.0.0.1; allow its dev origin.
   allowedDevOrigins: ["127.0.0.1"],
   // `X-Powered-By: Next.js` advertises the framework; there is no reason to expose it.
   poweredByHeader: false,
+  // Applied by the Node dev/prod server only. A static export has no server, so these
+  // headers are not part of the exported files (GitHub Pages sets its own). They are
+  // kept so `next dev` and any Node-hosted deployment stay hardened and the security
+  // e2e gate keeps exercising real behaviour.
   async headers() {
     return [{ source: "/(.*)", headers: securityHeaders }];
   },
   images: {
+    // A static export has no image optimization server, so `next/image` serves the
+    // source file directly. The gallery's `sizes`/`loading`/`quality` props are kept
+    // for the root-hosted (optimizer-capable) case, but nothing is transformed here.
+    unoptimized: true,
     // Prefer the smallest supported modern format: AVIF where the browser accepts
     // it, with WebP as the fallback. This shrinks the gallery payload per device.
     formats: ["image/avif", "image/webp"],
