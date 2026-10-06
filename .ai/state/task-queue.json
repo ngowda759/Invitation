@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T07:17:19.533Z",
+  "updatedAt": "2026-10-06T07:17:33.788Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -87,6 +87,34 @@
         "INV-002"
       ],
       "createdAt": "2026-10-06T05:10:22.007Z"
+    },
+    {
+      "id": "INV-004",
+      "title": "Invitation Content",
+      "phase": "Phase 4 — Invitation Content",
+      "status": "READY",
+      "summary": "Deliver Phase 4 — Invitation Content for the Invitation project: Darshan, festival, programme timeline, Guru Rayaru, Seva sections.",
+      "acceptanceCriteria": [
+        "Darshan implemented.",
+        "festival implemented.",
+        "programme timeline implemented.",
+        "Guru Rayaru implemented.",
+        "Seva sections implemented.",
+        "Phase gate satisfied: content and interaction review."
+      ],
+      "outOfScope": [
+        "No database.",
+        "No authentication.",
+        "No complex admin portal.",
+        "No dependency on Rayaramathaynk runtime APIs.",
+        "No payment processing.",
+        "No real-time backend.",
+        "No uncontrolled third-party widgets."
+      ],
+      "dependsOn": [
+        "INV-003"
+      ],
+      "createdAt": "2026-10-06T07:17:33.786Z"
     }
   ]
 }

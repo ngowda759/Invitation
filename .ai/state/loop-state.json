@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T07:17:19.538Z",
-  "status": "NEXT_PHASE",
-  "currentTaskId": "INV-003",
+  "updatedAt": "2026-10-06T07:17:33.788Z",
+  "status": "READY",
+  "currentTaskId": "INV-004",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": 5,
-  "reviewedHeadSha": "fea88faf4bfd6d8fcd9dd07c41693b8fe1a20ab9",
-  "lastVerdict": "PASS",
-  "lastCiStatus": "pending",
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
   "blockedReason": null,
   "lastMerge": {
     "taskId": "INV-003",
@@ -20,7 +20,7 @@
     "ciStatus": "pending"
   },
   "nextTask": {
-    "status": "requested",
+    "status": "applied",
     "taskId": "INV-004",
     "requestedAt": "2026-10-06T07:17:19.537Z",
     "reason": null
@@ -198,6 +198,12 @@
       "from": "NEXT_PHASE",
       "to": "NEXT_PHASE",
       "note": "Next task INV-004 requested from the openhands authority for phase Phase 4 — Invitation Content."
+    },
+    {
+      "at": "2026-10-06T07:17:33.788Z",
+      "from": "NEXT_PHASE",
+      "to": "READY",
+      "note": "Next task INV-004 (\"Invitation Content\") applied from the openhands authority for phase Phase 4 — Invitation Content."
     }
   ]
 }
