@@ -173,3 +173,43 @@
     opacity: 1;
   }
 }
+
+/*
+ * Gallery lightbox.
+ *
+ * A CSS-only full-view overlay: each thumbnail links to its own `:target`, and the
+ * matching panel is revealed with `:target`. It needs no client JavaScript, so it
+ * works with JavaScript disabled, and it sits below the skip link's focus layer
+ * (z-45 < z-50) so keyboard focus stays visible. The backdrop is a link back to the
+ * gallery, so the overlay can be closed with the keyboard alone.
+ */
+.gallery-lightbox {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 45;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(38, 23, 15, 0.94);
+}
+
+.gallery-lightbox:target {
+  display: grid;
+}
+
+.gallery-lightbox__backdrop {
+  position: absolute;
+  inset: 0;
+}
+
+.gallery-lightbox__figure {
+  position: relative;
+  width: min(90vw, 40rem);
+  text-align: center;
+}
+
+.gallery-lightbox__media {
+  position: relative;
+  height: min(78svh, 40rem);
+  width: 100%;
+}
