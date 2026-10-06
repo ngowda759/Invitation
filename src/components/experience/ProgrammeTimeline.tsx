@@ -29,7 +29,7 @@ export function ProgrammeTimeline({
           ))}
         </ol>
       ) : (
-        <ContentPlaceholder className="mt-8">
+        <ContentPlaceholder>
           The programme for this invitation is being prepared and will be published
           here once it is confirmed by the temple.
         </ContentPlaceholder>

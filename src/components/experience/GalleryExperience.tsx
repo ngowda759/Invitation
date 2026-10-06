@@ -55,7 +55,7 @@ export function GalleryExperience({
           ))}
         </ul>
       ) : (
-        <ContentPlaceholder className="mt-8">
+        <ContentPlaceholder>
           Photographs of the temple are being gathered and will be published here once
           they are confirmed by the temple.
         </ContentPlaceholder>

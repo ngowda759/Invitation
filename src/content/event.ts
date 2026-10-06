@@ -35,6 +35,3 @@ export const event = {
     secondary: "View programme",
   },
 } as const;
-
-export type Event = typeof event;
-

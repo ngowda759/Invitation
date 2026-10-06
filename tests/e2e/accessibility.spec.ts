@@ -95,7 +95,8 @@ test.describe("reduced motion", () => {
     // The opening threshold is removed immediately, not after a delay.
     await expect(page.locator(".opening-veil")).toBeHidden({ timeout: 1000 });
 
-    // The hero glow does not loop when motion is reduced.
+    // The hero glow is a still highlight (Phase 9 removed the looping animation), so
+    // no animation is attached under reduced motion either.
     const glowAnimation = await page
       .locator(".hero__glow")
       .evaluate((el) => getComputedStyle(el).animationName);

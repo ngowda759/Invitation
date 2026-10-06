@@ -1,22 +1,10 @@
 import { describe, expect, it } from "vitest";
 import { render, screen } from "@testing-library/react";
+import { readFileSync } from "node:fs";
+import { join } from "node:path";
 
-import { Invocation } from "@/components/experience/OpeningExperience";
 import { TempleHero } from "@/components/experience/TempleHero";
 import { event } from "@/content/event";
-
-describe("Invocation", () => {
-  it("renders only the lamp motif while no invocation line is supplied", () => {
-    const { container } = render(<Invocation invocation="" />);
-    expect(container.querySelector("svg")).not.toBeNull();
-    expect(container.querySelector("p")).toBeNull();
-  });
-
-  it("renders the invocation line when one is supplied", () => {
-    render(<Invocation invocation="A supplied invocation line." />);
-    expect(screen.getByText("A supplied invocation line.")).toBeInTheDocument();
-  });
-});
 
 describe("TempleHero", () => {
   it("exposes exactly one h1 carrying the event name", () => {
@@ -46,5 +34,12 @@ describe("TempleHero", () => {
   it("renders no fabricated timing content", () => {
     render(<TempleHero />);
     expect(screen.queryByText(/\b\d{1,2}:\d{2}\s?(am|pm)\b/i)).toBeNull();
+  });
+
+  it("keeps the hero free of constant looping animation", () => {
+    // Phase 9: the design system bans constant looping motion. The hero glow is a
+    // still highlight, so no `infinite` animation may appear in the stylesheet.
+    const css = readFileSync(join(process.cwd(), "src/app/globals.css"), "utf8");
+    expect(css).not.toMatch(/animation[^;{}]*\binfinite\b/);
   });
 });

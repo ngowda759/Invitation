@@ -47,7 +47,7 @@ export function SevaSection({
           ))}
         </ul>
       ) : (
-        <ContentPlaceholder className="mt-8">
+        <ContentPlaceholder>
           Seva opportunities are being prepared and will be published here once they
           are confirmed by the temple.
         </ContentPlaceholder>

@@ -53,10 +53,7 @@ export function ShareExperience({
 
   return (
     <ContentSection id="share" heading="Share" intro={content.intro}>
-      <p className="mt-6 text-base leading-relaxed text-text-dark/80">
-        Invite family and friends to the invitation.
-      </p>
-      <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
+      <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <Button type="button" size="lg" onClick={handleShare}>
           Share this invitation
         </Button>

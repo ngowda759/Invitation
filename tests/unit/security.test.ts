@@ -4,11 +4,7 @@ import { readFileSync, readdirSync } from "node:fs";
 import { join, relative } from "node:path";
 
 import nextConfig from "../../next.config";
-import {
-  EXTERNAL_LINK_REL,
-  isExternalHref,
-  isSafeImageSrc,
-} from "@/lib/security";
+import { EXTERNAL_LINK_REL, isSafeImageSrc } from "@/lib/security";
 
 /**
  * Phase 8 — Security / Hardening.
@@ -181,12 +177,6 @@ describe("Same-origin images", () => {
     expect(isSafeImageSrc("data:image/svg+xml,<svg/>")).toBe(false);
     expect(isSafeImageSrc("/images/../../etc/passwd")).toBe(false);
     expect(isSafeImageSrc("images/temple.jpg")).toBe(false);
-  });
-
-  it("classifies external hrefs correctly", () => {
-    expect(isExternalHref("https://wa.me/?text=hi")).toBe(true);
-    expect(isExternalHref("#gallery")).toBe(false);
-    expect(isExternalHref("/about")).toBe(false);
   });
 
   it("drops an unsafe gallery source before rendering", () => {

@@ -16,6 +16,7 @@ It detects, with narrow targeted rules:
 9. unnecessary dependencies
 10. obvious accessibility failures (image without alt, empty link/button)
 11. obvious responsive/layout problems where machine detection is possible
+12. excessive animation (constant looping motion, which the design system forbids)
 
 It must not use broad regexes that reject legitimate code. Every finding is
 machine-readable and every `error` finding blocks the PR.

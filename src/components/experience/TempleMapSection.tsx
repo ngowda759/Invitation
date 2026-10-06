@@ -33,7 +33,7 @@ export function TempleMapSection({
           </ButtonLink>
         </div>
       ) : (
-        <ContentPlaceholder className="mt-8">
+        <ContentPlaceholder>
           The temple map is being prepared and will be published here once the location
           is confirmed by the temple.
         </ContentPlaceholder>

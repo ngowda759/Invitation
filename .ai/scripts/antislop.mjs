@@ -270,6 +270,21 @@ scan(
   );
 }
 
+// 12. Excessive animation: constant looping motion in the source.
+//     The design system forbids constant looping animation and bouncing UI. Entry
+//     animations are finite (`forwards`); only `infinite` marks a loop, so this is a
+//     narrow, machine-detectable subset rather than a judgement about motion quality.
+{
+  const styleFiles = filesIn(SOURCE_DIRS, new Set([".css", ".tsx", ".jsx", ".ts"]));
+  scan(
+    "excessive-animation",
+    "error",
+    styleFiles,
+    /animation[^;{}]*\binfinite\b/g,
+    "Constant looping animation is not allowed; use a single, finite entrance.",
+  );
+}
+
 // Assemble the report.
 const errorCount = findings.filter((f) => f.severity === "error").length;
 const warningCount = findings.filter((f) => f.severity === "warning").length;

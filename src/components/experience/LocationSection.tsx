@@ -27,7 +27,7 @@ export function LocationSection({
           ))}
         </address>
       ) : (
-        <ContentPlaceholder className="mt-8">
+        <ContentPlaceholder>
           The temple address for this invitation is being prepared and will be
           published here once it is confirmed by the temple.
         </ContentPlaceholder>
