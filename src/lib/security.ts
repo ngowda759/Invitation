@@ -11,17 +11,6 @@
 /** The exact rel value required on every link that opens a new browsing context. */
 export const EXTERNAL_LINK_REL = "noopener noreferrer";
 
-/** True for an http(s) URL that points at another origin. */
-export function isExternalHref(href: string): boolean {
-  try {
-    const url = new URL(href);
-    return url.protocol === "https:" || url.protocol === "http:";
-  } catch {
-    // Relative, in-page (`#id`) and mailto/tel links are not external origins.
-    return false;
-  }
-}
-
 /**
  * True only for a same-origin, public-directory image path.
  *

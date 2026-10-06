@@ -49,5 +49,4 @@ function ButtonLink({
   return <a className={cn(buttonVariants({ variant, size }), className)} {...props} />;
 }
 
-export { Button, ButtonLink, buttonVariants };
-export type { ButtonProps, ButtonLinkProps };
+export { Button, ButtonLink };

@@ -7,8 +7,9 @@ import { event } from "@/content/event";
  *
  * A full-bleed, darkened maroon field with a warm lamp glow, a restrained grain and
  * an ornamental top border. It carries the invocation, the event identity and the
- * primary calls to action. It is a Server Component; the only motion is a slow CSS
- * glow that respects `prefers-reduced-motion`.
+ * primary calls to action. It is a Server Component with no motion of its own: the
+ * lamp glow is a still highlight, honouring the design system's ban on constant
+ * looping animation.
  */
 export function TempleHero() {
   return (

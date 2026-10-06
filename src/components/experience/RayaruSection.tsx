@@ -24,7 +24,7 @@ export function RayaruSection({
           ))}
         </div>
       ) : (
-        <ContentPlaceholder className="mt-8">
+        <ContentPlaceholder>
           An introduction to Guru Rayaru is being prepared and will be published here
           once it is confirmed by the temple.
         </ContentPlaceholder>
