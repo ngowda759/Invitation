@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T07:43:25.744Z",
-  "status": "NEXT_PHASE",
-  "currentTaskId": "INV-004",
+  "updatedAt": "2026-10-06T07:43:36.060Z",
+  "status": "READY",
+  "currentTaskId": "INV-005",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": 6,
-  "reviewedHeadSha": "423c90c259f8c7a36764c9d53b021a5a7b3576d8",
-  "lastVerdict": "PASS",
-  "lastCiStatus": "pending",
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
   "blockedReason": null,
   "lastMerge": {
     "taskId": "INV-004",
@@ -20,7 +20,7 @@
     "ciStatus": "pending"
   },
   "nextTask": {
-    "status": "requested",
+    "status": "applied",
     "taskId": "INV-005",
     "requestedAt": "2026-10-06T07:43:25.743Z",
     "reason": null
@@ -253,6 +253,12 @@
       "from": "NEXT_PHASE",
       "to": "NEXT_PHASE",
       "note": "Next task INV-005 requested from the openhands authority for phase Phase 5 — Temple Experience."
+    },
+    {
+      "at": "2026-10-06T07:43:36.060Z",
+      "from": "NEXT_PHASE",
+      "to": "READY",
+      "note": "Next task INV-005 (\"Temple Experience\") applied from the openhands authority for phase Phase 5 — Temple Experience."
     }
   ]
 }

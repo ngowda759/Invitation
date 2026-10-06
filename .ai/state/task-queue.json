@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T07:43:25.739Z",
+  "updatedAt": "2026-10-06T07:43:36.059Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -115,6 +115,33 @@
         "INV-003"
       ],
       "createdAt": "2026-10-06T07:17:33.786Z"
+    },
+    {
+      "id": "INV-005",
+      "title": "Temple Experience",
+      "phase": "Phase 5 — Temple Experience",
+      "status": "READY",
+      "summary": "Deliver Phase 5 — Temple Experience for the Invitation project: temple map, gallery, location, sharing.",
+      "acceptanceCriteria": [
+        "temple map implemented.",
+        "gallery implemented.",
+        "location implemented.",
+        "sharing implemented.",
+        "Phase gate satisfied: end-to-end invitation journey."
+      ],
+      "outOfScope": [
+        "No database.",
+        "No authentication.",
+        "No complex admin portal.",
+        "No dependency on Rayaramathaynk runtime APIs.",
+        "No payment processing.",
+        "No real-time backend.",
+        "No uncontrolled third-party widgets."
+      ],
+      "dependsOn": [
+        "INV-004"
+      ],
+      "createdAt": "2026-10-06T07:43:36.058Z"
     }
   ]
 }
