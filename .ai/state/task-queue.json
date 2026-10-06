@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T09:22:52.829Z",
+  "updatedAt": "2026-10-06T09:23:03.255Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -199,6 +199,36 @@
         "INV-006"
       ],
       "createdAt": "2026-10-06T08:59:31.302Z"
+    },
+    {
+      "id": "INV-008",
+      "title": "Security / Hardening",
+      "phase": "Phase 8 — Security / Hardening",
+      "status": "READY",
+      "summary": "Deliver Phase 8 — Security / Hardening for the Invitation project: secrets, dependency vulnerabilities, unsafe HTML, external links, security headers, CSP compatibility, content injection risks.",
+      "acceptanceCriteria": [
+        "secrets implemented.",
+        "dependency vulnerabilities implemented.",
+        "unsafe HTML implemented.",
+        "external links implemented.",
+        "security headers implemented.",
+        "CSP compatibility implemented.",
+        "content injection risks implemented.",
+        "Phase gate satisfied: security pass."
+      ],
+      "outOfScope": [
+        "No database.",
+        "No authentication.",
+        "No complex admin portal.",
+        "No dependency on Rayaramathaynk runtime APIs.",
+        "No payment processing.",
+        "No real-time backend.",
+        "No uncontrolled third-party widgets."
+      ],
+      "dependsOn": [
+        "INV-007"
+      ],
+      "createdAt": "2026-10-06T09:23:03.253Z"
     }
   ]
 }

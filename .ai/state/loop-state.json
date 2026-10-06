@@ -1,14 +1,14 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T09:22:52.836Z",
-  "status": "NEXT_PHASE",
-  "currentTaskId": "INV-007",
+  "updatedAt": "2026-10-06T09:23:03.256Z",
+  "status": "READY",
+  "currentTaskId": "INV-008",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": 9,
-  "reviewedHeadSha": "b624272245f88ba89cd89f932c3b94c46f7ab246",
-  "lastVerdict": "PASS",
-  "lastCiStatus": "pending",
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
   "blockedReason": null,
   "lastMerge": {
     "taskId": "INV-007",
@@ -20,7 +20,7 @@
     "ciStatus": "pending"
   },
   "nextTask": {
-    "status": "requested",
+    "status": "applied",
     "taskId": "INV-008",
     "requestedAt": "2026-10-06T09:22:52.835Z",
     "reason": null
@@ -418,6 +418,12 @@
       "from": "NEXT_PHASE",
       "to": "NEXT_PHASE",
       "note": "Next task INV-008 requested from the openhands authority for phase Phase 8 — Security / Hardening."
+    },
+    {
+      "at": "2026-10-06T09:23:03.256Z",
+      "from": "NEXT_PHASE",
+      "to": "READY",
+      "note": "Next task INV-008 (\"Security / Hardening\") applied from the openhands authority for phase Phase 8 — Security / Hardening."
     }
   ]
 }
