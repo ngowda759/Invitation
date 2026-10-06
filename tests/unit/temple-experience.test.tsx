@@ -114,16 +114,15 @@ describe("ShareExperience", () => {
 
     render(<ShareExperience content={{ intro: "", message: "Supplied message" }} />);
     const region = screen.getByRole("region", { name: "Share" });
-    fireEvent.click(
-      within(region).getByRole("button", { name: /share this invitation/i }),
-    );
+    const button = within(region).getByRole("button", { name: /share this invitation/i });
+    fireEvent.click(button);
 
     expect(writeText).toHaveBeenCalledWith(window.location.href);
+    // The button keeps a stable accessible name; the outcome is announced separately.
     await waitFor(() =>
-      expect(
-        within(region).getByRole("button", { name: /link copied/i }),
-      ).toBeInTheDocument(),
+      expect(within(region).getByRole("status")).toHaveTextContent(/copied/i),
     );
+    expect(button).toHaveAccessibleName(/share this invitation/i);
   });
 });
 

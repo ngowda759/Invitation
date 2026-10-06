@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ContentSection } from "@/components/experience/ContentSection";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { share as defaultContent, type ShareContent } from "@/content/share";
+import { cn } from "@/lib/utils";
 
 /**
  * Share.
@@ -56,7 +57,7 @@ export function ShareExperience({
       </p>
       <div className="mt-6 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <Button type="button" size="lg" onClick={handleShare}>
-          {copied ? "Link copied" : "Share this invitation"}
+          Share this invitation
         </Button>
         <ButtonLink
           href={whatsappHref}
@@ -66,8 +67,20 @@ export function ShareExperience({
           size="lg"
         >
           Share on WhatsApp
+          <span className="sr-only"> (opens in a new tab)</span>
         </ButtonLink>
       </div>
+      {/*
+        The button label stays stable so its accessible name does not change under the
+        visitor's focus. The outcome is announced through a polite status region, which
+        screen readers pick up without stealing focus.
+      */}
+      <p
+        role="status"
+        className={cn("mt-4 text-sm text-text-dark/70", !copied && "sr-only")}
+      >
+        {copied ? "A link to this invitation was copied to your clipboard." : ""}
+      </p>
     </ContentSection>
   );
 }
