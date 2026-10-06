@@ -5,6 +5,7 @@ import { useState } from "react";
 import { ContentSection } from "@/components/experience/ContentSection";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { share as defaultContent, type ShareContent } from "@/content/share";
+import { EXTERNAL_LINK_REL } from "@/lib/security";
 import { cn } from "@/lib/utils";
 
 /**
@@ -62,7 +63,7 @@ export function ShareExperience({
         <ButtonLink
           href={whatsappHref}
           target="_blank"
-          rel="noopener noreferrer"
+          rel={EXTERNAL_LINK_REL}
           variant="outline"
           size="lg"
         >
