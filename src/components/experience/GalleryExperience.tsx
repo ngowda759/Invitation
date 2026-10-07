@@ -27,27 +27,29 @@ export function GalleryExperience({
   return (
     <ContentSection id="gallery" heading="Gallery" intro={content.intro}>
       {safeImages.length > 0 ? (
-        <ul className="mt-8 grid grid-cols-2 gap-3 sm:grid-cols-3">
+        <ul className="mt-8 grid grid-cols-2 gap-4 sm:grid-cols-3">
           {safeImages.map((image, index) => (
             <li key={image.src}>
               <a
                 href={`#gallery-photo-${index}`}
-                className="group relative block aspect-square overflow-hidden rounded-card border border-maroon/15 bg-paper/50 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-maroon-deep"
+                className="group relative block aspect-square overflow-hidden border border-gold/40 bg-paper/50 p-1.5 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-maroon-deep"
               >
-                <Image
-                  src={image.src}
-                  alt={image.alt}
-                  fill
-                  // Thumbnails are never above the fold, so they stay lazy; the
-                  // lower quality is invisible at this display size.
-                  loading="lazy"
-                  quality={60}
-                  sizes="(max-width: 640px) 50vw, 33vw"
-                  className="object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none"
-                />
+                <span className="relative block h-full w-full overflow-hidden">
+                  <Image
+                    src={image.src}
+                    alt={image.alt}
+                    fill
+                    // Thumbnails are never above the fold, so they stay lazy; the
+                    // lower quality is invisible at this display size.
+                    loading="lazy"
+                    quality={60}
+                    sizes="(max-width: 640px) 50vw, 33vw"
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.03] motion-reduce:transform-none"
+                  />
+                </span>
               </a>
               {image.caption ? (
-                <p className="mt-2 text-xs leading-relaxed text-text-dark/70">
+                <p className="mt-2 text-xs leading-relaxed text-text-dark/70 italic">
                   {image.caption}
                 </p>
               ) : null}

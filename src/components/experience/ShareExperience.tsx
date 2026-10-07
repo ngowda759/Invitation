@@ -3,13 +3,14 @@
 import { useState } from "react";
 
 import { ContentSection } from "@/components/experience/ContentSection";
+import { DiyaMotif } from "@/components/experience/Ornaments";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { share as defaultContent, type ShareContent } from "@/content/share";
 import { EXTERNAL_LINK_REL } from "@/lib/security";
 import { cn } from "@/lib/utils";
 
 /**
- * Share.
+ * Share — the closing invitation to pass it on.
  *
  * A small client island for progressive enhancement only. The primary control opens
  * the platform share sheet when the browser offers one and falls back to copying the
@@ -53,6 +54,12 @@ export function ShareExperience({
 
   return (
     <ContentSection id="share" heading="Share" intro={content.intro}>
+      <div className="mt-8 flex items-center gap-4">
+        <DiyaMotif aria-hidden="true" className="h-9 w-9 shrink-0" />
+        <p className="text-base leading-relaxed text-text-dark/80">
+          Pass the invitation on to family and friends.
+        </p>
+      </div>
       <div className="mt-8 flex flex-col items-stretch gap-3 sm:flex-row sm:flex-wrap sm:items-center">
         <Button type="button" size="lg" onClick={handleShare}>
           Share this invitation

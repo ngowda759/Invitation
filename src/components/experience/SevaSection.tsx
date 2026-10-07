@@ -17,15 +17,12 @@ export function SevaSection({
   return (
     <ContentSection id="seva" heading="Seva" intro={content.intro}>
       {content.items.length > 0 ? (
-        <ul className="mt-8 space-y-4">
+        <ul className="mt-8 divide-y divide-gold/25">
           {content.items.map((item) => (
-            <li
-              key={item.label}
-              className="rounded-card border border-maroon/15 bg-paper/50"
-            >
+            <li key={item.label}>
               {item.detail ? (
                 <details className="group">
-                  <summary className="flex cursor-pointer items-center justify-between gap-3 px-5 py-4 font-display text-lg text-maroon marker:content-none">
+                  <summary className="flex cursor-pointer items-center justify-between gap-3 py-5 font-display text-xl text-maroon marker:content-none">
                     <span>{item.label}</span>
                     <span
                       aria-hidden="true"
@@ -34,12 +31,12 @@ export function SevaSection({
                       +
                     </span>
                   </summary>
-                  <p className="px-5 pb-5 text-sm leading-relaxed text-text-dark/80">
+                  <p className="pb-5 text-sm leading-relaxed text-text-dark/80">
                     {item.detail}
                   </p>
                 </details>
               ) : (
-                <p className="px-5 py-4 font-display text-lg text-maroon">
+                <p className="py-5 font-display text-xl text-maroon">
                   {item.label}
                 </p>
               )}

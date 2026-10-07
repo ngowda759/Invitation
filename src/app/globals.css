@@ -2,23 +2,30 @@
 
 /*
  * Rayara Anubhava design tokens.
- * Palette values are the approved project palette (docs/DESIGN-SYSTEM.md).
- * Gold is an accent, not a large surface colour.
+ *
+ * The palette is the approved project palette (docs/DESIGN-SYSTEM.md), tuned so the
+ * page reads as warm parchment rather than a flat white sheet: a paper-toned ivory
+ * ground, a deep temple maroon, antique gold used only as an accent, and a restrained
+ * dark brown for text. Gold is never a large surface colour.
  */
 :root {
-  --background: #fff8e8;
-  --foreground: #2d211b;
+  --background: #fbf3e3;
+  --foreground: #33241b;
 
-  --maroon-deep: #5a0714;
-  --maroon: #7a0b1c;
-  --gold: #c99a32;
-  --gold-light: #e6c66a;
-  --cream: #fff8e8;
-  --paper: #f5ead2;
-  --brown-deep: #26170f;
-  --text-dark: #2d211b;
+  --maroon-deep: #4e0a15;
+  --maroon: #6e0f1e;
+  --gold: #b98a2e;
+  --gold-light: #e2c079;
+  --saffron: #c6791f;
+  --cream: #fff9ec;
+  --paper: #f3e6cd;
+  --brown-deep: #241209;
+  --text-dark: #33241b;
 
-  --radius: 0.75rem;
+  --radius: 0.5rem;
+
+  /* A faint paper grain, tiled behind the whole document. Cheap and self-contained. */
+  --paper-grain: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='g'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23g)' opacity='0.045'/%3E%3C/svg%3E");
 }
 
 @theme inline {
@@ -29,13 +36,15 @@
   --color-maroon: var(--maroon);
   --color-gold: var(--gold);
   --color-gold-light: var(--gold-light);
+  --color-saffron: var(--saffron);
   --color-cream: var(--cream);
   --color-paper: var(--paper);
   --color-brown-deep: var(--brown-deep);
   --color-text-dark: var(--text-dark);
 
-  --font-display: var(--font-display), Georgia, "Times New Roman", serif;
+  --font-display: var(--font-display), "Cormorant Garamond", Georgia, "Times New Roman", serif;
   --font-sans: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-kannada: var(--font-kannada), "Noto Serif Kannada", serif;
 
   --radius-card: var(--radius);
 }
@@ -44,10 +53,12 @@
   html {
     -webkit-text-size-adjust: 100%;
     text-size-adjust: 100%;
+    scroll-behavior: smooth;
   }
 
   body {
     background-color: var(--background);
+    background-image: var(--paper-grain);
     color: var(--foreground);
     font-family: var(--font-sans), system-ui, -apple-system, "Segoe UI", sans-serif;
     text-rendering: optimizeLegibility;
@@ -76,6 +87,34 @@
   }
 }
 
+/*
+ * Ceremonial section reveal.
+ *
+ * Each invitation section is animated once, on entry, by a scroll-driven animation
+ * (`animation-timeline: view()`): it is a single, finite entrance that never loops,
+ * needs no client JavaScript, and degrades to a plain static section where
+ * scroll-driven animations are unsupported. With `prefers-reduced-motion` the global
+ * rule below collapses it, so the content is simply present.
+ */
+@supports (animation-timeline: view()) {
+  .section-reveal {
+    animation: reveal-up 1s ease-out both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 100%;
+  }
+}
+
+@keyframes reveal-up {
+  from {
+    opacity: 0;
+    transform: translateY(1.75rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -86,19 +125,28 @@
     scroll-behavior: auto !important;
   }
 
-  /* The opening threshold must not delay the content when motion is reduced. */
+  /* The invitation cover must not delay the content when motion is reduced. */
   .opening-veil {
     animation-delay: 0s !important;
+  }
+
+  /* No scroll-driven reveals: every section is simply present. */
+  .section-reveal {
+    animation: none !important;
   }
 }
 
 /*
- * Opening experience.
+ * Invitation cover.
  *
- * A fixed, presentational threshold that dissolves on its own with CSS only. It sits
- * below the skip link's focus layer (z-40 < z-50) so keyboard focus stays visible, and
- * it never captures pointer events. With `prefers-reduced-motion` the global rule above
- * collapses the animation, so the veil is removed immediately.
+ * The ceremonial threshold that opens the invitation: a deep maroon field with a warm
+ * lamp glow, a gilt temple arch and the invitation's identity. It is a presentational
+ * overlay only — hidden from assistive technology, no text, no interactive controls —
+ * and it dissolves on its own with CSS only (no client JavaScript). It sits below the
+ * skip link's focus layer (z-40 < z-50) so keyboard focus stays visible, and it never
+ * captures pointer events. The invitation is fully readable underneath from the first
+ * frame, so the cover is anticipation, never a gate; with `prefers-reduced-motion` the
+ * global rule above removes it immediately.
  */
 .opening-veil {
   position: fixed;
@@ -106,40 +154,61 @@
   z-index: 40;
   display: grid;
   place-items: center;
+  overflow: hidden;
   pointer-events: none;
   background:
-    radial-gradient(60% 50% at 50% 45%, rgba(201, 154, 50, 0.16), transparent 70%),
-    linear-gradient(180deg, #3f0510 0%, #5a0714 60%, #26170f 100%);
-  animation: opening-dissolve 1.2s ease-out 0.15s forwards;
+    radial-gradient(62% 48% at 50% 42%, rgba(201, 154, 50, 0.2), transparent 70%),
+    linear-gradient(180deg, #3a0510 0%, #4e0a15 58%, #241209 100%);
+  animation: cover-dissolve 1.5s ease-in-out 1.35s forwards;
 }
 
 .opening-veil__glow {
   position: absolute;
-  height: 22rem;
-  width: 22rem;
-  max-width: 80vw;
+  height: 24rem;
+  width: 24rem;
+  max-width: 82vw;
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(230, 198, 106, 0.4), transparent 68%);
-  filter: blur(6px);
+  background: radial-gradient(circle, rgba(226, 192, 121, 0.42), transparent 68%);
+  filter: blur(8px);
+}
+
+.opening-veil__panel {
+  position: relative;
+  display: grid;
+  place-items: center;
+  gap: 1.35rem;
+  padding: 2.5rem 2.75rem;
+  animation: cover-rise 1.4s ease-out 0.12s both;
+}
+
+.opening-veil__arch {
+  position: absolute;
+  inset: 0;
+  height: 100%;
+  width: 100%;
 }
 
 .opening-veil__diya {
   position: relative;
-  filter: drop-shadow(0 0 20px rgba(230, 198, 106, 0.6));
-  animation: opening-rise 1.2s ease-out 0.15s forwards;
+  filter: drop-shadow(0 0 22px rgba(226, 192, 121, 0.62));
 }
 
-@keyframes opening-dissolve {
+.opening-veil__rule {
+  position: relative;
+  opacity: 0.85;
+}
+
+@keyframes cover-dissolve {
   to {
     opacity: 0;
     visibility: hidden;
   }
 }
 
-@keyframes opening-rise {
+@keyframes cover-rise {
   from {
     opacity: 0;
-    transform: translateY(10px) scale(0.96);
+    transform: translateY(12px) scale(0.97);
   }
   to {
     opacity: 1;
@@ -156,8 +225,8 @@
  */
 .hero {
   background:
-    radial-gradient(130% 85% at 50% -10%, rgba(201, 154, 50, 0.24), transparent 62%),
-    linear-gradient(180deg, #3f0510 0%, #5a0714 55%, #26170f 100%);
+    radial-gradient(130% 85% at 50% -10%, rgba(201, 154, 50, 0.26), transparent 62%),
+    linear-gradient(180deg, #3a0510 0%, #4e0a15 55%, #241209 100%);
 }
 
 .hero__glow {
@@ -169,7 +238,7 @@
   max-width: 92vw;
   transform: translateX(-50%);
   border-radius: 9999px;
-  background: radial-gradient(circle, rgba(230, 198, 106, 0.28), transparent 66%);
+  background: radial-gradient(circle, rgba(226, 192, 121, 0.3), transparent 66%);
   filter: blur(10px);
 }
 
@@ -180,6 +249,38 @@
   mix-blend-mode: soft-light;
   pointer-events: none;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='140' height='140'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* A warm halo that frames the hero's gilt mandala. */
+.hero__mandala-halo {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  height: 26rem;
+  width: 26rem;
+  max-width: 96vw;
+  transform: translate(-50%, -58%);
+  border-radius: 9999px;
+  background: radial-gradient(circle, rgba(226, 192, 121, 0.16), transparent 62%);
+  pointer-events: none;
+}
+
+/*
+ * Invitation sections.
+ *
+ * A thin gilt rule separates one movement of the invitation from the next. It is a
+ * repeating decorative band, drawn with a background gradient so it needs no image.
+ */
+.gilt-rule {
+  height: 1px;
+  background-image: linear-gradient(
+    to right,
+    transparent,
+    rgba(185, 138, 46, 0.55) 22%,
+    rgba(226, 192, 121, 0.85) 50%,
+    rgba(185, 138, 46, 0.55) 78%,
+    transparent
+  );
 }
 
 /*
@@ -201,7 +302,7 @@
   z-index: 45;
   place-items: center;
   padding: 1.5rem;
-  background: rgba(38, 23, 15, 0.94);
+  background: rgba(36, 18, 9, 0.94);
   --focus-ring-offset: var(--cream);
 }
 

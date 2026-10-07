@@ -1,10 +1,25 @@
 import type { Metadata, Viewport } from "next";
-import { Inter, Lora } from "next/font/google";
+import { Cormorant_Garamond, Inter, Noto_Serif_Kannada } from "next/font/google";
 
 import { event } from "@/content/event";
 import { site } from "@/content/site";
 
 import "./globals.css";
+
+/*
+ * Three self-hosted faces, each with one job:
+ *   - Cormorant Garamond: the invitation's display voice (titles, names, ornaments).
+ *   - Inter: quiet, highly readable body and interface text.
+ *   - Noto Serif Kannada: the Kannada identity line, so Kannada copy renders in a
+ *     proper Kannada face rather than a fallback.
+ * All three are variable fonts, so a single file per face is downloaded and served
+ * from the same origin (no runtime request to Google, no layout shift).
+ */
+const display = Cormorant_Garamond({
+  subsets: ["latin"],
+  display: "swap",
+  variable: "--font-display",
+});
 
 const sans = Inter({
   subsets: ["latin"],
@@ -12,10 +27,13 @@ const sans = Inter({
   variable: "--font-sans",
 });
 
-const display = Lora({
-  subsets: ["latin"],
+const kannada = Noto_Serif_Kannada({
+  subsets: ["kannada"],
   display: "swap",
-  variable: "--font-display",
+  variable: "--font-kannada",
+  // The Kannada line is optional content; do not preload a face the first paint
+  // may not use.
+  preload: false,
 });
 
 export const metadata: Metadata = {
@@ -48,7 +66,10 @@ export default function RootLayout({
   children,
 }: Readonly<{ children: React.ReactNode }>) {
   return (
-    <html lang="en" className={`${sans.variable} ${display.variable}`}>
+    <html
+      lang="en"
+      className={`${display.variable} ${sans.variable} ${kannada.variable}`}
+    >
       <body className="flex min-h-dvh flex-col bg-background text-foreground antialiased">
         <a
           href="#main"

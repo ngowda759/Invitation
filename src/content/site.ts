@@ -9,6 +9,6 @@ export const site = {
   projectName: "Rayara Anubhava",
   /** Neutral, accurate description of what this repository currently is. */
   description:
-    "Digital temple invitation experience. Foundation build; content and design arrive in later phases.",
+    "Digital temple invitation experience, composed for mobile first and opened like a doorway.",
   locale: "en-IN",
 } as const;
