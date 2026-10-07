@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-07T02:34:31.306Z",
+  "updatedAt": "2026-10-07T07:12:58.696Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -296,7 +296,7 @@
       "id": "INV-011",
       "title": "Devotional Invitation Experience",
       "phase": "Phase 11 — Devotional Invitation Experience",
-      "status": "READY",
+      "status": "NEXT_PHASE",
       "summary": "Deliver Phase 11 — Devotional Invitation Experience for the Invitation project: invitation cover reveal, devotional opening composition, temple-atmosphere storytelling, ceremonial programme typography, warm people/family presentation, ornament vocabulary, restrained ceremonial motion, mobile-first invitation rhythm.",
       "acceptanceCriteria": [
         "invitation cover reveal implemented.",
