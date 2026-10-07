@@ -91,6 +91,19 @@ describe("aggregateCi", () => {
     expect(aggregateCi([{ status: "completed", conclusion: "failure" }])).toBe("failure");
     expect(aggregateCi([{ status: "in_progress", conclusion: null }])).toBe("pending");
   });
+
+  it("ignores the reconciliation job's own check run", () => {
+    // The reconciliation workflow runs on the merged head and creates a check run
+    // there; its result must never be read as the task's CI.
+    expect(
+      aggregateCi([
+        { name: "Lint, typecheck, test, build", status: "completed", conclusion: "success" },
+        { name: "Reconcile merged task", status: "completed", conclusion: "failure" },
+      ]),
+    ).toBe("success");
+    // A lone reconciliation check leaves no task CI evidence at all.
+    expect(aggregateCi([{ name: "Reconcile merged task", status: "completed", conclusion: "failure" }])).toBe("none");
+  });
 });
 
 describe("roadmap", () => {
@@ -301,6 +314,56 @@ describe("idempotency", () => {
     expect(result.ok).toBe(true);
     expect(state().status).toBe("NEXT_PHASE");
     expect(state().completedTasks).toEqual(["INV-001"]);
+  });
+});
+
+describe("reconciliation deadlock recovery", () => {
+  /**
+   * The reconciliation job runs on the merged head and creates a check run there. If
+   * that job fails (for example because its state push raced the autopilot stage) the
+   * failure is recorded on the merged head SHA — and the reconciled state is lost. A
+   * later run must still be able to complete the task from the other real CI evidence,
+   * and must not be blocked by the reconciliation job's own failed check.
+   */
+  const mergeWithFailedReconcile = () => {
+    const scenario = writeScenario(dir, {
+      ...MERGED_INV001,
+      checkRuns: [
+        { name: "Lint, typecheck, test, build", status: "completed", conclusion: "success" },
+        { name: "End-to-end tests", status: "completed", conclusion: "success" },
+        { name: "Reconcile merged task", status: "completed", conclusion: "failure" },
+      ],
+    });
+    return runScript(dir, ".ai/scripts/reconcile.mjs", ["--pr", "1", "--json"], { scenario });
+  };
+
+  it("recovers a lost reconciliation whose own job check failed", () => {
+    const result = mergeWithFailedReconcile();
+    expect(result.ok).toBe(true);
+    expect(JSON.parse(result.stdout).status).toBe("reconciled");
+
+    const s = state();
+    expect(s.status).toBe("NEXT_PHASE");
+    expect(s.completedTasks).toEqual(["INV-001"]);
+    // The merge evidence records the *task's* CI, not the reconciliation job's result.
+    expect(s.lastMerge.ciStatus).toBe("success");
+    expect(s.nextTask.status).toBe("requested");
+    expect(s.nextTask.taskId).toBe("INV-002");
+  });
+
+  it("still refuses when the task's own CI genuinely failed", () => {
+    const scenario = writeScenario(dir, {
+      ...MERGED_INV001,
+      checkRuns: [
+        { name: "Lint, typecheck, test, build", status: "completed", conclusion: "failure" },
+        { name: "Reconcile merged task", status: "completed", conclusion: "success" },
+      ],
+    });
+    const result = runScript(dir, ".ai/scripts/reconcile.mjs", ["--pr", "1", "--json"], { scenario });
+    expect(result.ok).toBe(false);
+    expect(JSON.parse(result.stdout).error).toMatch(/failing CI checks.*Lint, typecheck, test, build/);
+    expect(state().status).toBe("PLANNED");
+    expect(state().completedTasks).toEqual([]);
   });
 });
 

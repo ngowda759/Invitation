@@ -189,6 +189,16 @@ if (!existsSync(fromRepo(reconcileWorkflow))) {
     fail("reconciliation workflow must trigger on pull_request closed");
   }
   if (!/reconcile\.mjs/.test(wf)) fail("reconciliation workflow must invoke .ai/scripts/reconcile.mjs");
+  // A merge fires both stages at once; they must share a concurrency group or their
+  // state pushes race and one stage's state (including the reconciled merge) is lost.
+  if (!/group:\s*invitation-loop-/.test(wf)) {
+    fail("reconciliation workflow must join the shared invitation-loop concurrency group");
+  }
+  // A bare `git push` is rejected when main moved (the merge's own state push); the
+  // reconciled state must be rebased and retried instead of silently dropped.
+  if (!/git rebase/.test(wf) || /^\s*git push\s*$/m.test(wf)) {
+    fail("reconciliation workflow must rebase and retry its state push, not push bare");
+  }
 }
 
 // 12b. The autonomous autopilot stage must be wired: it generates the next task and
@@ -214,6 +224,14 @@ if (!existsSync(fromRepo(autopilotWorkflow))) {
   }
   if (/\$\{\{\s*secrets\.OPENHANDS_HOST\s*\}\}/.test(wf)) {
     fail("autopilot workflow must not read OPENHANDS_HOST from secrets; it is a repository variable");
+  }
+  // The autopilot stage writes `.ai/state` too, so it must join the same concurrency
+  // group as reconciliation; otherwise the two stages race on `git push` to main.
+  if (!/group:\s*invitation-loop-main/.test(wf)) {
+    fail("autopilot workflow must join the shared invitation-loop-main concurrency group");
+  }
+  if (!/git rebase/.test(wf) || /^\s*git push\s*$/m.test(wf)) {
+    fail("autopilot workflow must rebase and retry its state push, not push bare");
   }
 }
 

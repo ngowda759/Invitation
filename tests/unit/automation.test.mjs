@@ -203,6 +203,36 @@ describe("dispatch credential wiring", () => {
   });
 });
 
+describe("loop stage serialization", () => {
+  const readRaw = (p) => readFileSync(resolve(repoRoot, p), "utf8");
+
+  it("serializes the reconcile and autopilot stages on one concurrency group", () => {
+    // A merge fires the reconciliation (on PR close) and the autopilot (on the merge's
+    // state push) at almost the same time. If they run concurrently their `git push`
+    // steps race and one stage's state — including the reconciled merge — is lost.
+    const reconcile = readRaw(".github/workflows/invitation-reconcile.yml");
+    const autopilot = readRaw(".github/workflows/invitation-autopilot.yml");
+    expect(/group:\s*invitation-loop-/.exec(reconcile)).not.toBeNull();
+    expect(autopilot).toMatch(/group:\s*invitation-loop-main/);
+    // The reconcile group must fall back to the shared `main` group when the event
+    // carries no PR number (the two workflow_dispatch cases), so the two stages can
+    // never run simultaneously on main.
+    expect(reconcile).toMatch(/invitation-loop-\$\{\{[^}]*\|\|\s*'main'\s*\}\}/);
+  });
+
+  it("rebases and retries the state push so a lost race cannot drop the reconciliation", () => {
+    for (const path of [
+      ".github/workflows/invitation-reconcile.yml",
+      ".github/workflows/invitation-autopilot.yml",
+    ]) {
+      const wf = readRaw(path);
+      expect(wf, `${path} must not use a bare git push`).not.toMatch(/^\s*git push\s*$/m);
+      expect(wf, `${path} must rebase before pushing`).toMatch(/git rebase "origin\/\$BRANCH"/);
+      expect(wf, `${path} must retry the push`).toMatch(/for attempt in 1 2 3 4 5/);
+    }
+  });
+});
+
 describe("review report schema", () => {
   it("requires isChatGpt to be false", () => {
     const valid = {
