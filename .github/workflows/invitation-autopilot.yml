@@ -21,8 +21,13 @@ on:
 permissions:
   contents: write
 
+# Share the reconciliation stage's concurrency group so the two stages never run at
+# the same time. Without this, a merge fires both a reconciliation (on PR close) and
+# an autopilot run (on the merge's state push), and the two `git push` steps race —
+# one is rejected with "fetch first" and its state (including the reconciled merge)
+# is lost.
 concurrency:
-  group: autopilot-${{ github.ref }}
+  group: invitation-loop-main
   cancel-in-progress: false
 
 jobs:
@@ -34,6 +39,9 @@ jobs:
         uses: actions/checkout@v4
         with:
           ref: ${{ github.event.repository.default_branch }}
+          # A full history so the state push can rebase onto a moved main without
+          # hitting a shallow-boundary conflict.
+          fetch-depth: 0
           token: ${{ secrets.INVITATION_AUTOMATION_TOKEN || secrets.GITHUB_TOKEN }}
 
       - name: Set up Node.js
@@ -66,7 +74,22 @@ jobs:
             exit 0
           fi
           git commit -m "chore(loop): generate next task"
-          git push
+          # Rebase-and-retry: a concurrent push to main (for example the merge's
+          # state push, or the reconciliation stage) can reject a bare push.
+          BRANCH="${{ github.event.repository.default_branch }}"
+          for attempt in 1 2 3 4 5; do
+            if git fetch origin "$BRANCH" \
+              && git rebase "origin/$BRANCH" \
+              && git push origin "HEAD:$BRANCH"; then
+              echo "Persisted generated task (attempt ${attempt})."
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            echo "::warning::push attempt ${attempt} lost a race with another push to main; retrying."
+            sleep 3
+          done
+          echo "::error::could not persist generated task after 5 attempts."
+          exit 1
 
       # Dispatch is idempotent: a task with a recorded dispatch is never dispatched
       # again. A missing credential records a blocked dispatch and exits non-zero.
@@ -97,4 +120,18 @@ jobs:
             exit 0
           fi
           git commit -m "chore(loop): record OpenHands dispatch"
-          git push
+          # Rebase-and-retry: a concurrent push to main can reject a bare push.
+          BRANCH="${{ github.event.repository.default_branch }}"
+          for attempt in 1 2 3 4 5; do
+            if git fetch origin "$BRANCH" \
+              && git rebase "origin/$BRANCH" \
+              && git push origin "HEAD:$BRANCH"; then
+              echo "Persisted dispatch record (attempt ${attempt})."
+              exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            echo "::warning::push attempt ${attempt} lost a race with another push to main; retrying."
+            sleep 3
+          done
+          echo "::error::could not persist dispatch record after 5 attempts."
+          exit 1

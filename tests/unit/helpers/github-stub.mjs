@@ -15,11 +15,14 @@ globalThis.fetch = async (url) => {
 
   if (/\/pulls\/\d+$/.test(path)) return ok(scenario.pull);
   if (/\/pulls\?/.test(path)) return ok(scenario.pulls ?? (scenario.pull ? [scenario.pull] : []));
-  if (/\/commits\/[0-9a-f]{40}\/check-runs/.test(path)) {
-    return ok({ check_runs: scenario.checkRuns ?? [] });
+  if (/\/commits\/([0-9a-f]{40})\/check-runs/.test(path)) {
+    const sha = /\/commits\/([0-9a-f]{40})\/check-runs/.exec(path)[1];
+    const runs = scenario.checkRunsBySha?.[sha] ?? scenario.checkRuns ?? [];
+    return ok({ check_runs: runs });
   }
-  if (/\/commits\/[0-9a-f]{40}$/.test(path)) {
-    return ok(scenario.commit ?? { sha: scenario.pull?.merge_commit_sha });
+  if (/\/commits\/([0-9a-f]{40})$/.test(path)) {
+    const sha = /\/commits\/([0-9a-f]{40})$/.exec(path)[1];
+    return ok(scenario.commitsBySha?.[sha] ?? scenario.commit ?? { sha: scenario.pull?.merge_commit_sha ?? sha });
   }
   return { ok: false, status: 404, json: async () => ({ message: "not found" }) };
 };

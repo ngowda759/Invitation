@@ -93,7 +93,9 @@ It then verifies, against GitHub, that:
 - the merge commit SHA is a real object id **and** the commit exists on GitHub;
 - the PR head branch belongs to the current task (`automation/inv-001*`);
 - the head's check runs are not failing (real CI evidence, recorded as
-  `lastMerge.ciStatus`).
+  `lastMerge.ciStatus`). The reconciliation job's **own** check run
+  (`Reconcile merged task`) is excluded, because it reports the reconciliation, not the
+  task's CI — see `docs/implementation/LOOP-RECONCILIATION-RACE-REPAIR.md`.
 
 A PR whose head branch does not belong to the current task is not treated as that
 task's PR. If an explicit `--pr` names such a PR (for example this repair PR), the
@@ -177,8 +179,9 @@ reopening of `INV-001`.
 | Merge commit not verifiable on GitHub | refuse; no state change |
 | PR head branch not the task's branch | `unrelated`; no state change |
 | PR does not match recorded `currentPr` | refuse |
-| CI failing on the merged head | refuse; task not completed |
+| CI failing on the merged head | refuse; task not completed (the reconciliation job's own check is excluded) |
 | No following phase / authority unavailable | stay `NEXT_PHASE`, record `blockedReason` and `nextTask.status: failed` |
+| State push loses a race with another push to main | rebase and retry, so the reconciliation is never dropped |
 
 Nothing is ever fabricated: no PR number, SHA, review result, CI result or task
 completion.

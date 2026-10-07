@@ -17,6 +17,20 @@ import { nextTaskId, phaseAfter } from "./next-task.mjs";
 
 const TERMINAL = "NEXT_PHASE";
 
+/**
+ * The reconciliation job itself runs on `pull_request: closed` and creates a check
+ * run on the merged head. That check run reports the *reconciliation* result, not
+ * the task's CI result, so it must be excluded when deciding whether the task's
+ * required checks passed — otherwise a transient failure of the reconciliation job
+ * (e.g. a push race with the autopilot stage) would permanently block the very task
+ * it was trying to reconcile.
+ */
+export const RECONCILE_CHECK_NAMES = ["Reconcile merged task"];
+
+function isReconcileCheck(name) {
+  return RECONCILE_CHECK_NAMES.some((known) => known.toLowerCase() === String(name ?? "").toLowerCase());
+}
+
 function escapeRegExp(value) {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }
@@ -43,9 +57,13 @@ export function pathToNextPhase(config, from) {
 /** Aggregate check-run conclusions into a single honest CI status string. */
 export function aggregateCi(checkRuns) {
   if (!checkRuns || checkRuns.length === 0) return "none";
+  // The reconciliation job's own check run is not a task CI signal; exclude it so a
+  // failed reconciliation cannot masquerade as failed CI for the merged task.
+  const relevant = checkRuns.filter((r) => !isReconcileCheck(r.name));
+  if (relevant.length === 0) return "none";
   const failing = new Set(["failure", "timed_out", "cancelled", "action_required", "startup_failure"]);
-  if (checkRuns.some((r) => failing.has(r.conclusion))) return "failure";
-  if (checkRuns.every((r) => r.status === "completed")) return "success";
+  if (relevant.some((r) => failing.has(r.conclusion))) return "failure";
+  if (relevant.every((r) => r.status === "completed")) return "success";
   return "pending";
 }
 
@@ -121,11 +139,18 @@ export async function reconcileMerge(config, { prNumber, client, now = () => new
   }
 
   // 5. Record real CI evidence; a failing required check blocks reconciliation.
+  //    The reconciliation job's own check run is excluded by `aggregateCi`, so this
+  //    reflects the task's CI, not the reconciliation attempt.
   const checkRuns = await client.getCheckRuns(pull.headSha);
   const ciStatus = aggregateCi(checkRuns);
   if (ciStatus === "failure") {
+    const failing = checkRuns
+      .filter((r) =>
+        ["failure", "timed_out", "cancelled", "action_required", "startup_failure"].includes(r.conclusion),
+      )
+      .map((r) => r.name);
     throw new Error(
-      `Merged PR #${pull.number} has failing CI checks; refusing to mark ${taskId} completed.`,
+      `Merged PR #${pull.number} has failing CI checks (${failing.join(", ")}); refusing to mark ${taskId} completed.`,
     );
   }
 
