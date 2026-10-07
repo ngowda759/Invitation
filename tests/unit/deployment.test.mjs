@@ -7,7 +7,7 @@
  * static export with an environment-aware base path, and the Pages workflow must
  * upload only the generated `out/` output.
  */
-import { readFileSync } from "node:fs";
+import { existsSync, readFileSync } from "node:fs";
 import { fileURLToPath } from "node:url";
 import { dirname, resolve } from "node:path";
 
@@ -32,6 +32,14 @@ describe("Next.js static export configuration", () => {
 
   it("serves images unoptimized, since a static export has no optimizer", () => {
     expect(nextConfig).toMatch(/unoptimized:\s*true/);
+  });
+});
+
+describe("Application icon", () => {
+  it("ships an app icon so the browser tab is branded, not blank", () => {
+    // The `app/icon.svg` file convention makes Next.js emit the favicon link; the
+    // export therefore carries an icon for GitHub Pages to serve under the base path.
+    expect(existsSync(resolve(repoRoot, "src/app/icon.svg"))).toBe(true);
   });
 });
 
