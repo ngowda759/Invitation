@@ -11,11 +11,13 @@ and it must not take a runtime dependency on Rayaramathaynk or any other reposit
 
 ## Status
 
-Phases 0–10 are complete and the invitation is published to GitHub Pages. The
+Phases 0–11 are complete and the invitation is published to GitHub Pages. The
 application is a Next.js App Router static export (TypeScript, Tailwind CSS, ESLint,
-Vitest, Playwright) with CI, an AntiSlop gate and a Pages deployment workflow. Content
-sections render an honest placeholder until the product authority supplies verified
-copy.
+Vitest, Playwright) with CI, an AntiSlop gate and a Pages deployment workflow. Phase 11
+gave the experience its devotional identity: a ceremonial cover, a temple-atmosphere
+hero, a narrative order for the content, an ornament vocabulary and restrained motion.
+Content sections render an honest placeholder until the product authority supplies
+verified copy.
 
 No temple facts, event dates, timings, or religious claims are invented anywhere in this
 repository. Real content is supplied by the product authority.

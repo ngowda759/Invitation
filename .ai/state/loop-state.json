@@ -1,15 +1,15 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T11:16:42.093Z",
-  "status": "NEXT_PHASE",
-  "currentTaskId": "INV-010",
+  "updatedAt": "2026-10-07T02:34:31.307Z",
+  "status": "READY",
+  "currentTaskId": "INV-011",
   "round": 0,
   "maxReviewRounds": 3,
-  "currentPr": 12,
-  "reviewedHeadSha": "5afb93a887a90e31dc72013d2a20a6a3273237dd",
-  "lastVerdict": "PASS",
-  "lastCiStatus": "pending",
-  "blockedReason": "No phase follows \"Phase 10 — Release\" in docs/PHASES.md; the authority must supply the next phase.",
+  "currentPr": null,
+  "reviewedHeadSha": null,
+  "lastVerdict": null,
+  "lastCiStatus": null,
+  "blockedReason": null,
   "lastMerge": {
     "taskId": "INV-010",
     "prNumber": 12,
@@ -20,10 +20,10 @@
     "ciStatus": "pending"
   },
   "nextTask": {
-    "status": "failed",
-    "taskId": null,
-    "requestedAt": null,
-    "reason": "No phase follows \"Phase 10 — Release\" in docs/PHASES.md; the authority must supply the next phase."
+    "status": "applied",
+    "taskId": "INV-011",
+    "requestedAt": "2026-10-07T02:34:25.114Z",
+    "reason": null
   },
   "completedTasks": [
     "INV-001",
@@ -583,6 +583,18 @@
       "from": "NEXT_PHASE",
       "to": "NEXT_PHASE",
       "note": "Next-task generation blocked: No phase follows \"Phase 10 — Release\" in docs/PHASES.md; the authority must supply the next phase."
+    },
+    {
+      "at": "2026-10-07T02:34:25.115Z",
+      "from": "NEXT_PHASE",
+      "to": "NEXT_PHASE",
+      "note": "Next task INV-011 requested from the openhands authority for phase Phase 11 — Devotional Invitation Experience."
+    },
+    {
+      "at": "2026-10-07T02:34:31.307Z",
+      "from": "NEXT_PHASE",
+      "to": "READY",
+      "note": "Next task INV-011 (\"Devotional Invitation Experience\") applied from the openhands authority for phase Phase 11 — Devotional Invitation Experience."
     }
   ]
 }

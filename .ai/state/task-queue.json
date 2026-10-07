@@ -1,6 +1,6 @@
 {
   "version": 1,
-  "updatedAt": "2026-10-06T11:16:42.087Z",
+  "updatedAt": "2026-10-07T02:34:31.306Z",
   "tasks": [
     {
       "id": "INV-001",
@@ -291,6 +291,37 @@
         "INV-009"
       ],
       "createdAt": "2026-10-06T10:17:12.903Z"
+    },
+    {
+      "id": "INV-011",
+      "title": "Devotional Invitation Experience",
+      "phase": "Phase 11 — Devotional Invitation Experience",
+      "status": "READY",
+      "summary": "Deliver Phase 11 — Devotional Invitation Experience for the Invitation project: invitation cover reveal, devotional opening composition, temple-atmosphere storytelling, ceremonial programme typography, warm people/family presentation, ornament vocabulary, restrained ceremonial motion, mobile-first invitation rhythm.",
+      "acceptanceCriteria": [
+        "invitation cover reveal implemented.",
+        "devotional opening composition implemented.",
+        "temple-atmosphere storytelling implemented.",
+        "ceremonial programme typography implemented.",
+        "warm people/family presentation implemented.",
+        "ornament vocabulary implemented.",
+        "restrained ceremonial motion implemented.",
+        "mobile-first invitation rhythm implemented.",
+        "Phase gate satisfied: invitation experience review on mobile + desktop."
+      ],
+      "outOfScope": [
+        "No database.",
+        "No authentication.",
+        "No complex admin portal.",
+        "No dependency on Rayaramathaynk runtime APIs.",
+        "No payment processing.",
+        "No real-time backend.",
+        "No uncontrolled third-party widgets."
+      ],
+      "dependsOn": [
+        "INV-010"
+      ],
+      "createdAt": "2026-10-07T02:34:31.300Z"
     }
   ]
 }

@@ -123,3 +123,16 @@ Run:
 - final ChatGPT review
 
 Only then release/deploy.
+
+## Phase 11 — Devotional Invitation Experience
+Deliver:
+- invitation cover reveal
+- devotional opening composition
+- temple-atmosphere storytelling
+- ceremonial programme typography
+- warm people/family presentation
+- ornament vocabulary
+- restrained ceremonial motion
+- mobile-first invitation rhythm
+
+Gate: invitation experience review on mobile + desktop.

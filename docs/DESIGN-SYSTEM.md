@@ -11,22 +11,36 @@ The experience should communicate:
 - simplicity
 
 ## Palette
-Primary:
-- Deep Maroon: #5A0714
-- Temple Maroon: #7A0B1C
-- Antique Gold: #C99A32
-- Light Gold: #E6C66A
-- Cream: #FFF8E8
-- Warm Paper: #F5EAD2
-- Deep Brown: #26170F
-- Text Dark: #2D211B
 
-Use gold as an accent, not as a large surface color.
+The palette is the approved project palette, tuned during Phase 11 so the page reads as
+warm parchment rather than a flat white sheet. The tokens live in `src/app/globals.css`;
+these are the implemented values.
+
+- Deep Maroon (ground): `#4E0A15`
+- Temple Maroon: `#6E0F1E`
+- Antique Gold: `#B98A2E`
+- Light Gold: `#E2C079`
+- Muted Saffron: `#C6791F`
+- Cream: `#FFF9EC`
+- Warm Paper: `#F3E6CD`
+- Deep Brown: `#241209`
+- Text Dark: `#33241B`
+- Page ground (ivory): `#FBF3E3`
+
+Use gold as an accent, not as a large surface color. Every text/background pair the
+invitation renders is checked against WCAG AA (see `docs/implementation/PHASE-11-*`).
 
 ## Typography
-Use an elegant serif/display treatment for devotional headings and a highly readable sans-serif for UI/body content.
 
-The exact font pair must be selected and documented during implementation. Avoid loading excessive font weights.
+Three faces, no more:
+
+- Display — Cormorant Garamond: devotional headings, event identity, the programme.
+- Body — Inter: UI and body copy, chosen for readability at small sizes.
+- Kannada — Noto Serif Kannada: Kannada/Sanskrit identity lines, rendered only when the
+  product authority supplies verified copy.
+
+Loaded through `next/font/google`, self-hosted at build time; no runtime font request.
+
 
 ## Visual motifs
 Use subtle:
