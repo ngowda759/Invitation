@@ -11,10 +11,11 @@ and it must not take a runtime dependency on Rayaramathaynk or any other reposit
 
 ## Status
 
-Phase 1 — Foundation. The application foundation is in place: Next.js App Router,
-TypeScript, Tailwind CSS, a minimal shadcn/ui foundation, ESLint, Vitest and Playwright,
-with CI and an AntiSlop gate. The invitation experience itself is not built yet; content
-and design arrive in later phases.
+Phases 0–10 are complete and the invitation is published to GitHub Pages. The
+application is a Next.js App Router static export (TypeScript, Tailwind CSS, ESLint,
+Vitest, Playwright) with CI, an AntiSlop gate and a Pages deployment workflow. Content
+sections render an honest placeholder until the product authority supplies verified
+copy.
 
 No temple facts, event dates, timings, or religious claims are invented anywhere in this
 repository. Real content is supplied by the product authority.
